@@ -1393,12 +1393,8 @@ define([
       if (_quantity.trim().length == 0) _quantity = '1'
 
       //單位
-      var _unitabbreviation = result.unitabbreviation
-
-      //額外備註
-      var _extra_memo = result.custbody_gw_tcm_extra_memo
+      var _unitabbreviation = _result.unitabbreviation
       if (_index_tranid != _tranid) {
-        _total_extra_memo += _extra_memo
         _index_tranid = _tranid
       }
       //明細備註
@@ -1649,10 +1645,6 @@ define([
     (isEGUIClassEnable) ? _classificationField.defaultValue = _selectClassification
         : _classificationField.updateDisplayType({displayType: serverWidget.FieldDisplayType.DISABLED})
 
-    var _voucherExtraMemoField = form.getField({
-      id: 'custpage_voucher_extra_memo'
-    })
-    _voucherExtraMemoField.defaultValue = _total_extra_memo
     ////////////////////////////////////////////////////////////////////////////////////////
     //紀錄零稅率資料
     //適用零稅率規定

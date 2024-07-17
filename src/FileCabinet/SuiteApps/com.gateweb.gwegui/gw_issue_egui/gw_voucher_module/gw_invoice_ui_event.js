@@ -2071,10 +2071,6 @@ define([
     var _gui_yearmonth_type = _current_record.getValue({
       fieldId: 'custpage_allowance_deduction_period'
     })
-    var _voucher_extra_memo = _current_record.getValue({
-      fieldId: 'custpage_voucher_extra_memo'
-    })
-    if (_voucher_extra_memo == 'undefined') _voucher_extra_memo = ''
     //20210118 walter 零稅率資訊
     //適用零稅率規定
     var _applicable_zero_tax = _current_record.getValue({
@@ -2132,7 +2128,6 @@ define([
       gui_yearmonth_type: _gui_yearmonth_type,
       dept_code: _dept_code,
       classification: _classification,
-      extraMemo: _voucher_extra_memo,
       year_month: year_month,
       tax_type: _tax_type,
       tax_rate: _tax_rate,
@@ -2856,11 +2851,7 @@ define([
             fieldId: 'custrecord_gw_total_amount',
             value: _main.total_amount
           })
-          _voucherMainRecord.setValue({
-            fieldId: 'custrecord_gw_voucher_extra_memo',
-            value: _main.extraMemo
-          })
-        
+
           _voucherMainRecord.setValue({
             fieldId: 'custrecord_gw_need_upload_egui_mig',
             value: assignLogType

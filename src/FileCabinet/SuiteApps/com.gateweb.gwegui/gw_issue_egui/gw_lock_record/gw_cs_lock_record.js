@@ -20,7 +20,6 @@ define(['N/record', 'N/url'], function (record, url) {
       'custbody_gw_gui_num_end',
       'custbody_gw_gui_num_start',
       'custbody_gw_tax_id_number',
-      'custbody_gw_tcm_extra_memo',
       'custbody_gw_lock_transaction',
       'custbody_gw_gui_address',
       'custbody_gw_gui_title',

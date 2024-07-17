@@ -1090,10 +1090,7 @@ define([
       //單位
       var _unitabbreviation = _result.values.unitabbreviation
 
-      //額外備註
-      var _extra_memo = _result.values.custbody_gw_tcm_extra_memo
       if (_index_tranid != _tranid) {
-        _total_extra_memo += _extra_memo
         _index_tranid = _tranid
       }
       //明細備註
@@ -1299,12 +1296,6 @@ define([
       id: 'custpage_classification',
     })
     _classificationField.defaultValue = _selectClassification
-
-    var _voucherExtraMemoField = form.getField({
-      id: 'custpage_voucher_extra_memo',
-    })
-    _voucherExtraMemoField.defaultValue = _total_extra_memo
-
     ////////////////////////////////////////////////////////////////////////////////////////
     log.debug(
       '_customer_id',
