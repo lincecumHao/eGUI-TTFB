@@ -1393,7 +1393,7 @@ define([
       if (_quantity.trim().length == 0) _quantity = '1'
 
       //單位
-      var _unitabbreviation = _result.unitabbreviation
+      var _unitabbreviation = result.unitabbreviation
       if (_index_tranid != _tranid) {
         _index_tranid = _tranid
       }
