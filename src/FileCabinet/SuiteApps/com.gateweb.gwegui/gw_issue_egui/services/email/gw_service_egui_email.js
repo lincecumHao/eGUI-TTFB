@@ -49,7 +49,7 @@ define([
   function updateEguiObj(eguiObj) {
     var eguiObjClone = JSON.parse(JSON.stringify(eguiObj))
     eguiObjClone.lines = ramda.map((line) => {
-      line.unitPrice = Math.round(parseInt(line.unitPrice))
+      // line.unitPrice = Math.round(parseInt(line.unitPrice))
       line.salesAmt = Math.round(parseInt(line.salesAmt))
       return line
     }, eguiObjClone.lines)
