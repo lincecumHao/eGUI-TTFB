@@ -102,8 +102,7 @@ define([
       getNumberSublistFieldValue(apDocFields.fields.docType.id)
     )
     console.log('currentSublistId', currentSublistApDocRecord.id)
-    // if (parseInt(docType) !== 24 && parseInt(docType) !== 23) {
-    if (
+    if (parseInt(docType) !== 24 && parseInt(docType) !== 23 &&
       guiNumberValidator.isGuiNumberDuplicated(
         guiNumber,
         currentSublistApDocRecord.id,
@@ -114,8 +113,7 @@ define([
       resultObj.error.push(GwError.GuiNumberDuplicated)
       return resultObj
     }
-    // }
-    // console.log('validateGuiNumber docType', docType)
+    console.log('validateGuiNumber docType', docType)
     if (guiNumberValidator.isGuiNumberRequired(docType)) {
       resultObj = validateRequiredGuiNumber(guiNumber, docType)
     }
