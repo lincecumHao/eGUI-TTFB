@@ -293,8 +293,37 @@ define([
     }
   }
 
+  function needToValidateNumber(context) {
+    return context.fieldId === apDocFields.fields.salesAmt.id
+        || context.fieldId ===  apDocFields.fields.taxAmt.id
+        || context.fieldId ===  apDocFields.fields.totalAmt.id
+  }
+
+  function validateFieldAction (context) {
+    try {
+      var flag = true
+      var sublistId = 'recmachcustrecord_gw_apt_doc_tran_id'
+      if(context.sublistId === sublistId && needToValidateNumber(context)) {
+        var fieldValue = context.currentRecord.getCurrentSublistValue({sublistId, fieldId: context.fieldId})
+        if(fieldValue < 0) {
+          flag = false
+          dialog.alert({
+            title: 'Error',
+            message: '金額不得小於0'
+          })
+          context.currentRecord.setCurrentSublistValue({sublistId, fieldId: context.fieldId, value: ''})
+        }
+      }
+
+      return flag
+    } catch (e) {
+      console.log('validateFieldAction - e', e)
+    }
+  }
+
   exports.fieldChanged = sublistFilterWrapper(fieldChanged)
   exports.lineInit = sublistFilterWrapper(lineInit)
   exports.validateLine = sublistFilterWrapper(validateLine)
+  exports.validateField = sublistFilterWrapper(validateFieldAction)
   return exports
 })
