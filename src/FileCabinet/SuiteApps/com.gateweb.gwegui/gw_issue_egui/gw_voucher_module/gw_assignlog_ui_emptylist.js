@@ -3,8 +3,8 @@
  * @NScriptType Suitelet
  * @NModuleScope Public
  */
-define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_utility/gw_common_invoice_utility', '../gw_common_utility/gw_common_configure'],
-    function(serverWidget, runtime, config, file, invoiceutility, gwconfigure) {
+define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_utility/gw_common_invoice_utility', '../gw_common_utility/gw_common_configure', '../gw_common_utility/gw_lib_sl_utility'],
+    function(serverWidget, runtime, config, file, invoiceutility, gwconfigure, gwLibSuiteLetUtility) {
 		//取得 E0402.xml
 		function loadE0402Xml() { 
 			var _xml_string = '';
@@ -65,28 +65,9 @@ define(['N/ui/serverWidget', 'N/runtime', 'N/config', 'N/file', '../gw_common_ut
 				layoutType: serverWidget.FieldLayoutType.OUTSIDE
 			}); 		  
             ///////////////////////////////////////////////////////////////////////////////////
-			//20210427 walter 增加賣方公司 List
-			var _user_obj        = runtime.getCurrentUser()
-			var _user_subsidiary = _user_obj.subsidiary
-			log.debug('get user_subsidiary', _user_subsidiary)
-			var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
-			if (_company_ary!=null) {
-				for (var i=0; i<_company_ary.length; i++) {
-					var _company = _company_ary[i];
-					
-					log.debug('get company', JSON.stringify(_company))
-					/**
-					_selectBusinessNo.addSelectOption({
-						  value: _company.subsidiary+'-'+_company.tax_id_number,
-						  text: _company.tax_id_number + '-' + _company.be_gui_title,
-						})
-					*/	
-					_selectBusinessNo.addSelectOption({
-						  value: _company.tax_id_number,
-						  text: _company.tax_id_number + '-' + _company.be_gui_title,
-						})
-				}
-			}
+			var currentUserObject = runtime.getCurrentUser()
+			var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+			gwLibSuiteLetUtility.addBusinessEntitySelectOption(_company_ary, _selectBusinessNo)
     	    ///////////////////////////////////////////////////////////////////////////////////
 			//期別
 			var _yearmonth_field = form.addField({

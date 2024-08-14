@@ -15,6 +15,7 @@ define([
   'N/format',
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_string_utility',
+  '../gw_common_utility/gw_lib_sl_utility'
 ], function (
   runtime,
   serverWidget,
@@ -25,7 +26,8 @@ define([
   redirect,
   format,
   invoiceutility,
-  stringutility
+  stringutility,
+  gwLibSuiteLetUtility
 ) {
   var invoiceEditScriptId = 'customscript_gw_invoice_ui_edit'
   var invoiceEditDeployId = 'customdeploy_gw_invoice_ui_e'
@@ -274,23 +276,10 @@ define([
       layoutType: serverWidget.FieldLayoutType.OUTSIDEABOVE,
     })
     ///////////////////////////////////////////////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////
-    //20210506 walter 增加賣方公司 List
-    var _user_obj        = runtime.getCurrentUser()
-    var _user_subsidiary = _user_obj.subsidiary
-    //var _company_ary = invoiceutility.getSellerInfoBySubsidiary(_user_subsidiary)
-	var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
-    if (_company_ary!=null) {
-    	for (var i=0; i<_company_ary.length; i++) {
-    		var _company = _company_ary[i];
-    		
-    		_selectBusinessNo.addSelectOption({
-    	          value: _company.tax_id_number,
-    	          text: _company.tax_id_number + '-' + _company.be_gui_title,
-    	        })
-    	}
-    } 
-    //////////////////////////////////////////////////////////////////////////////////  
+    var currentUserObject = runtime.getCurrentUser()
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+    gwLibSuiteLetUtility.addBusinessEntitySelectOption(_company_ary, _selectBusinessNo)
+    //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _selectCustomerCode = form.addField({
       id: 'custpage_selectcustomerid',

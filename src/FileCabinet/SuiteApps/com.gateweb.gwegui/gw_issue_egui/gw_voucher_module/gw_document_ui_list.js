@@ -534,47 +534,18 @@ define([
     })
     ///////////////////////////////////////////////////////////////////////////////////
     //20210427 walter 增加賣方公司 List
-    var _user_obj        = runtime.getCurrentUser()
-    var _user_subsidiary = _user_obj.subsidiary
-    log.debug('get user_subsidiary', _user_subsidiary)
-    var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
-    if (_company_ary!=null) {
-    	for (var i=0; i<_company_ary.length; i++) {
-    		var _company = _company_ary[i];
-    		
-    		log.debug('get company', JSON.stringify(_company))
-    		
+    var currentUserObject = runtime.getCurrentUser()
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+    if (_company_ary !== null) {
+    	for (var i = 0; i < _company_ary.length; i++) {
+    		var eachCompanyObject = _company_ary[i];
+            log.debug({title: 'createForm - eachCompanyObject', details: JSON.stringify(eachCompanyObject)})
     		_selectBusinessNo.addSelectOption({
-    	          value: _company.subsidiary+'-'+_company.tax_id_number,
-    	          text: _company.tax_id_number + '-' + _company.be_gui_title,
-    	        })
+    	          value: eachCompanyObject.subsidiary + '-' + eachCompanyObject.tax_id_number,
+    	          text: eachCompanyObject.tax_id_number + '-' + eachCompanyObject.be_gui_title,
+            })
     	}
     }
-    /**
-    var _businessSearch = search
-      .create({
-        type: 'customrecord_gw_business_entity',
-        columns: ['custrecord_gw_be_tax_id_number', 'custrecord_gw_be_gui_title'],
-        filters: ['custrecord_gw_be_ns_subsidiary', 'is', _user_subsidiary]
-      })
-      .run()
-      .each(function (result) {
-        var _internalid = result.id
-
-        var _tax_id_number = result.getValue({
-          name: 'custrecord_gw_be_tax_id_number',
-        })
-        var _be_gui_title = result.getValue({
-          name: 'custrecord_gw_be_gui_title',
-        })
-
-        _selectBusinessNo.addSelectOption({
-          value: _tax_id_number,
-          text: _tax_id_number + '-' + _be_gui_title,
-        })
-        return true
-      }) 
-    */
     //////////////////////////////////////////////////////////////////////////////////
     //客戶代碼
     var _selectCustomerCode = form.addField({

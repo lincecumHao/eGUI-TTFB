@@ -38,21 +38,15 @@ define([
   //20210427 walter 增加賣方公司 List
   function getUserSubsidaryTaxId() {
     var _user_subsidary_taxId_ary = []
-
-    var _user_obj = runtime.getCurrentUser()
-    var _user_subsidiary = _user_obj.subsidiary
-
-    var _company_ary = invoiceutility.getBusinessEntitByUserId(
-      _user_obj.id,
-      _user_subsidiary
-    )
-    if (_company_ary != null) {
+    var currentUserObject = runtime.getCurrentUser()
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+    if (_company_ary !== null) {
       for (var i = 0; i < _company_ary.length; i++) {
-        var _company = _company_ary[i]
-        _user_subsidary_taxId_ary.push(_company.tax_id_number)
+        var eachCompanyObject = _company_ary[i];
+        log.debug({title: 'getUserSubsidaryTaxId - eachCompanyObject', details: JSON.stringify(eachCompanyObject)})
+        _user_subsidary_taxId_ary.push(eachCompanyObject.tax_id_number)
       }
     }
-
     return _user_subsidary_taxId_ary
   }
 
