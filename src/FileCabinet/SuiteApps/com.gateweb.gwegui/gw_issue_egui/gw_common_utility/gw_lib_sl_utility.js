@@ -12,8 +12,8 @@ define([], () => {
 
     exports.addBusinessEntitySelectOption = (companyArray, selectFieldObject) => {
         if (companyArray.length > 0) {
-            for (let index = 0; i < companyArray.length; i++) {
-                let eachCompanyObject = companyArray[index];
+            for (let i = 0; i < companyArray.length; i++) {
+                let eachCompanyObject = companyArray[i];
                 log.debug({
                     title: 'addBusinessEntitySelectOption - eachCompanyObject',
                     details: JSON.stringify(eachCompanyObject)
