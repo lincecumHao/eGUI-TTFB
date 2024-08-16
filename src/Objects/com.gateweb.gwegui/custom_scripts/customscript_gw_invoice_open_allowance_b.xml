@@ -15,7 +15,7 @@
             <audslctrole></audslctrole>
             <eventtype>VIEW</eventtype>
             <executioncontext>USERINTERFACE</executioncontext>
-            <isdeployed>T</isdeployed>
+            <isdeployed>F</isdeployed>
             <loglevel>DEBUG</loglevel>
             <recordtype>CREDITMEMO</recordtype>
             <runasrole>ADMINISTRATOR</runasrole>
