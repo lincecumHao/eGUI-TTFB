@@ -20,6 +20,33 @@ define([
 
     let exports = {};
 
+    exports.getParamsByTransactionType = (context) => {
+        const transactionTypeMapping = {
+            customerdeposit: {
+                buttonName: '開立發票',
+                scriptPath: './gw_custom_deposit_open_egui_event.js',
+                functionName: 'onButtonClick()'
+            },
+            cashsale: {
+                buttonName: '開立發票',
+                scriptPath: './gw_cash_sale_open_egui_event.js',
+                functionName: 'onButtonClick()'
+            },
+            invoice: {
+                buttonName: '開立發票',
+                scriptPath: './gw_invoice_open_voucher_event.js',
+                functionName: 'onButtonClickForEGUI()'
+            },
+            creditmemo: {
+                buttonName: '開立折讓(電子發票)',
+                scriptPath: './gw_invoice_open_voucher_event.js',
+                functionName: 'onButtonClickForAllowance()'
+            }
+        }
+
+        return transactionTypeMapping[context.newRecord.type]
+    }
+
     exports.isNeedToDisplayCreateVoucherButton = (context) => {
         let flag = false
         const recordObject = context.newRecord

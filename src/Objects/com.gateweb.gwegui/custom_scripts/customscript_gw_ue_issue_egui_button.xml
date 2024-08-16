@@ -1,0 +1,68 @@
+<usereventscript scriptid="customscript_gw_ue_issue_egui_button">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>GW UE Issue EGUI Button</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_ue_issue_egui_button.js]</scriptfile>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_gw_ue_issue_egui_button_cd">
+      <allemployees>T</allemployees>
+      <alllocalizationcontexts>T</alllocalizationcontexts>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <eventtype></eventtype>
+      <executioncontext>ACTION|ADVANCEDREVREC|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CONSOLRATEADJUSTOR|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OTHER|PAYMENTGATEWAY|PAYMENTPOSTBACK|PLATFORMEXTENSION|PORTLET|PROMOTIONS|RECORDACTION|RESTLET|RESTWEBSERVICES|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WEBSERVICES|WORKBOOKBUILDER|WORKFLOW</executioncontext>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <recordtype>CUSTOMERDEPOSIT</recordtype>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+    </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_gw_ue_issue_egui_button_cs">
+      <allemployees>T</allemployees>
+      <alllocalizationcontexts>T</alllocalizationcontexts>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <eventtype></eventtype>
+      <executioncontext>ACTION|ADVANCEDREVREC|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CONSOLRATEADJUSTOR|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OTHER|PAYMENTGATEWAY|PAYMENTPOSTBACK|PLATFORMEXTENSION|PORTLET|PROMOTIONS|RECORDACTION|RESTLET|RESTWEBSERVICES|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WEBSERVICES|WORKBOOKBUILDER|WORKFLOW</executioncontext>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <recordtype>CASHSALE</recordtype>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+    </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_gw_ue_issue_egui_button_cm">
+      <allemployees>T</allemployees>
+      <alllocalizationcontexts>T</alllocalizationcontexts>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <eventtype></eventtype>
+      <executioncontext>ACTION|ADVANCEDREVREC|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CONSOLRATEADJUSTOR|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OTHER|PAYMENTGATEWAY|PAYMENTPOSTBACK|PLATFORMEXTENSION|PORTLET|PROMOTIONS|RECORDACTION|RESTLET|RESTWEBSERVICES|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WEBSERVICES|WORKBOOKBUILDER|WORKFLOW</executioncontext>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <recordtype>CREDITMEMO</recordtype>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+    </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_gw_ue_issue_egui_button_inv">
+      <allemployees>T</allemployees>
+      <alllocalizationcontexts>T</alllocalizationcontexts>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <eventtype></eventtype>
+      <executioncontext>ACTION|ADVANCEDREVREC|BANKCONNECTIVITY|BANKSTATEMENTPARSER|BUNDLEINSTALLATION|CLIENT|CONSOLRATEADJUSTOR|CSVIMPORT|CUSTOMGLLINES|CUSTOMMASSUPDATE|DATASETBUILDER|DEBUGGER|EMAILCAPTURE|FICONNECTIVITY|FIPARSER|MAPREDUCE|OCRPLUGIN|OTHER|PAYMENTGATEWAY|PAYMENTPOSTBACK|PLATFORMEXTENSION|PORTLET|PROMOTIONS|RECORDACTION|RESTLET|RESTWEBSERVICES|SCHEDULED|SDFINSTALLATION|SHIPPINGPARTNERS|SUITELET|TAXCALCULATION|USEREVENT|USERINTERFACE|WEBSERVICES|WORKBOOKBUILDER|WORKFLOW</executioncontext>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <recordtype>INVOICE</recordtype>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+    </scriptdeployment>
+  </scriptdeployments>
+</usereventscript>
