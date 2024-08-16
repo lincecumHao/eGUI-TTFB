@@ -13,6 +13,7 @@ define([
   '../gw_common_utility/gw_common_invoice_utility',
   '../gw_common_utility/gw_common_string_utility',
   '../gw_common_utility/gw_common_configure',
+  '../gw_common_utility/gw_lib_sl_utility'
 ], function (
   runtime,
   serverWidget,
@@ -22,7 +23,8 @@ define([
   dateutility,
   invoiceutility,
   stringutility,
-  gwconfigure
+  gwconfigure,
+  gwLibSuiteLetUtility
 ) {
   //之後設成Script的Parameters
   var _assignLogImportScriptId = gwconfigure.getGwAssignLogImportScriptId()
@@ -130,27 +132,9 @@ define([
     })
     */
     ////////////////////////////////////////////////////////////////////////////
-    //20210427 walter 增加賣方公司 List
-    var _user_obj        = runtime.getCurrentUser()
-    var _user_subsidiary = _user_obj.subsidiary
-	log.debug('GET user role: ' , JSON.stringify(_user_obj)); //administrator
-	log.debug('Internal ID of current user role: ' + _user_obj.role); //administrator
-	log.debug('Custom script ID of current user role: ' + _user_obj.roleId); //3
-     
-    var _company_ary = invoiceutility.getBusinessEntitByUserId(_user_obj.id, _user_subsidiary)
-	//var _company_ary = invoiceutility.getSellerInfoBySubsidiary(_user_subsidiary)
-	
-    if (_company_ary!=null) {
-    	for (var i=0; i<_company_ary.length; i++) {
-    		var _company = _company_ary[i];
-    		log.debug('GET _company: ' , JSON.stringify(_company)); //administrator
-    		_selectBusinessNo.addSelectOption({
-    	          value: _company.tax_id_number,
-    	          text: _company.tax_id_number + '-' + _company.be_gui_title,
-    	        })
-    	}
-    }
-     
+    var currentUserObject = runtime.getCurrentUser()
+    var _company_ary = invoiceutility.getBusinessEntitByUserId(currentUserObject)
+    gwLibSuiteLetUtility.addBusinessEntitySelectOption(_company_ary, _selectBusinessNo)
     ////////////////////////////////////////////////////////////////////////////
 
     //期別
