@@ -1325,14 +1325,9 @@ define([
     form.addButton({
       id: 'custpage_print_pdf_button',
       label: 'PDF下載',
-      functionName: 'printPDFSelected("EGUI","PDF")',
+      functionName: 'printPDFSelected("EGUI")',
     })
 
-    form.addButton({
-      id: 'custpage_print_document_button',
-      label: '列印發票',
-      functionName: 'printPDFSelected("EGUI","PAPER")',
-    })
     /////////////////////////////////////////////////////////////////////////////////////////
     var _voucher_main_record = createFormHeader(form, _selected_voucher_internal_id)
     //發票明細

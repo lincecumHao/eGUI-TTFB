@@ -1139,14 +1139,9 @@ define([
     form.addButton({
       id: 'custpage_print_pdf_button',
       label: 'PDF下載',
-      functionName: 'printPDFSelected("ALLOWANCE","PDF")',
+      functionName: 'printPDFSelected("ALLOWANCE")',
     })
 
-    form.addButton({
-      id: 'custpage_print_document_button',
-      label: '列印發票',
-      functionName: 'printPDFSelected("ALLOWANCE","PAPER")',
-    })
     /////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////
     var _voucher_main_record = createFormHeader(form, _selected_voucher_internal_id)

@@ -56,7 +56,7 @@ define([
 
   /////////////////////////////////////////////////////////////////////////////////////////
   //Gen XML Function-Start
-  function printPDFSelected(voucher_type, printType) {
+  function printPDFSelected(voucher_type) {
     try {
       var voucher_list_id = _currentRecord.getValue({
         fieldId: 'custpage_voucher_hiddent_listid',
@@ -72,23 +72,11 @@ define([
         var _title = _pre_text + '-下載PDF管理'
         var _message = '請選取' + _pre_text + '-下載PDF資料'
 
-        if (printType == 'PAPER') {
-          _title = _pre_text + '-列印管理'
-          _message = '請選取' + _pre_text + '-列印資料'
-        }
-
         gwmessage.showErrorMessage(_title, _message)
         return
       } else {
         //Disabled Button
-        if (printType == 'PAPER') {
-          document.getElementById(
-            'custpage_print_document_button'
-          ).disabled = true
-        } else {
-          //PDF
-          document.getElementById('custpage_print_pdf_button').disabled = true
-        }
+        document.getElementById('custpage_print_pdf_button').disabled = true
       }
 
       var _b2bs_xml = _currentRecord.getValue({
@@ -184,32 +172,17 @@ define([
           //alert('_data_type='+_data_type+' ,document_status='+_document_status);
           try {
             var values = {}
-            if (printType == 'PDF') {
-              values['custrecord_gw_is_printed_pdf'] = true
-              if (_reprint_pdf == false) {
-                var _id = record.submitFields({
-                  type: _voucher_main_record,
-                  id: parseInt(_apply_id),
-                  values: values,
-                  options: {
-                    enableSourcing: false,
-                    ignoreMandatoryFields: true,
-                  },
-                })
-              }
-            } else {
-              values['custrecord_gw_is_printed_paper'] = true
-              if (_reprint_paper == false) {
-                var _id = record.submitFields({
-                  type: _voucher_main_record,
-                  id: parseInt(_apply_id),
-                  values: values,
-                  options: {
-                    enableSourcing: false,
-                    ignoreMandatoryFields: true,
-                  },
-                })
-              }
+            values['custrecord_gw_is_printed_pdf'] = true
+            if (_reprint_pdf == false) {
+              var _id = record.submitFields({
+                type: _voucher_main_record,
+                id: parseInt(_apply_id),
+                values: values,
+                options: {
+                  enableSourcing: false,
+                  ignoreMandatoryFields: true
+                }
+              })
             }
           } catch (e) {
             console.log(e.name + ':' + e.message)
@@ -220,11 +193,7 @@ define([
       }
 
       try {
-        if (printType == 'PDF') {
           gwapiclient.downloadPdfs(_xmlFileObjects)
-        } else {
-          gwapiclient.printToPrinter(_xmlFileObjects)
-        }
       } catch (e) {
         console.log('error', e)
       }
