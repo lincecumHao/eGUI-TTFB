@@ -23,7 +23,7 @@ define(['N/record',
     	for (var i = 0; i < document_ary.length; i++) {
              var _document_list = document_ary[i] //INVOICE_1259998
              var _document_ary = _document_list.split('_')
-             var _document_type = _document_ary[0].toUpperCase()
+             var _document_type = _document_ary.length === 3 ? _document_ary[0].toUpperCase() + '_' + _document_ary[1].toUpperCase() : _document_ary[0].toUpperCase()
              var _document_internal_id = _document_ary[_document_ary.length-1]
 
 			 log.debug({
