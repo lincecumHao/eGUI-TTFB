@@ -11,7 +11,7 @@
   <islogenabled>F</islogenabled>
   <keephistory>ONLYWHENTESTING</keephistory>
   <name>Restrict 營業人基本資料</name>
-  <recordtypes>[appid=com.gateweb.gwegui, scriptid=customrecord_gw_business_entity]</recordtypes>
+  <recordtypes>[scriptid=customrecord_gw_business_entity]</recordtypes>
   <releasestatus>RELEASED</releasestatus>
   <runasadmin>T</runasadmin>
   <initcondition>
@@ -25,6 +25,52 @@
       <name>State 1</name>
       <positionx>243</positionx>
       <positiony>133</positiony>
+      <workflowactions triggertype="ONENTRY">
+        <removebuttonaction scriptid="workflowaction598">
+          <buttonid>NEW</buttonid>
+          <conditionsavedsearch></conditionsavedsearch>
+          <contexttypes>USERINTERFACE</contexttypes>
+          <eventtypes></eventtypes>
+          <isinactive>F</isinactive>
+          <initcondition>
+            <formula><![CDATA["User Role" NOT IN ("Role1")]]></formula>
+            <type>VISUAL_BUILDER</type>
+            <parameters>
+              <parameter>
+                <name>User Role</name>
+                <value>STDUSERROLE</value>
+              </parameter>
+              <parameter>
+                <name>Role1</name>
+                <selectrecordtype>-118</selectrecordtype>
+                <value>ADMINISTRATOR</value>
+              </parameter>
+            </parameters>
+          </initcondition>
+        </removebuttonaction>
+        <removebuttonaction scriptid="workflowaction599">
+          <buttonid>MAKECOPY</buttonid>
+          <conditionsavedsearch></conditionsavedsearch>
+          <contexttypes>USERINTERFACE</contexttypes>
+          <eventtypes></eventtypes>
+          <isinactive>F</isinactive>
+          <initcondition>
+            <formula><![CDATA["User Role" NOT IN ("Role1")]]></formula>
+            <type>VISUAL_BUILDER</type>
+            <parameters>
+              <parameter>
+                <name>User Role</name>
+                <value>STDUSERROLE</value>
+              </parameter>
+              <parameter>
+                <name>Role1</name>
+                <selectrecordtype>-118</selectrecordtype>
+                <value>ADMINISTRATOR</value>
+              </parameter>
+            </parameters>
+          </initcondition>
+        </removebuttonaction>
+      </workflowactions>
       <workflowactions triggertype="BEFORELOAD">
         <lockrecordaction scriptid="workflowaction594">
           <conditionsavedsearch></conditionsavedsearch>
@@ -47,6 +93,31 @@
             </parameters>
           </initcondition>
         </lockrecordaction>
+      </workflowactions>
+      <workflowactions triggertype="BEFORESUBMIT">
+        <returnusererroraction scriptid="workflowaction600">
+          <clienttriggerfields></clienttriggerfields>
+          <conditionsavedsearch></conditionsavedsearch>
+          <contexttypes>USERINTERFACE</contexttypes>
+          <errortext>不允許非Admin Role建立資料</errortext>
+          <eventtypes></eventtypes>
+          <isinactive>F</isinactive>
+          <initcondition>
+            <formula><![CDATA["User Role" NOT IN ("Role1")]]></formula>
+            <type>VISUAL_BUILDER</type>
+            <parameters>
+              <parameter>
+                <name>User Role</name>
+                <value>STDUSERROLE</value>
+              </parameter>
+              <parameter>
+                <name>Role1</name>
+                <selectrecordtype>-118</selectrecordtype>
+                <value>ADMINISTRATOR</value>
+              </parameter>
+            </parameters>
+          </initcondition>
+        </returnusererroraction>
       </workflowactions>
     </workflowstate>
   </workflowstates>
