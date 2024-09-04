@@ -1388,7 +1388,8 @@ define([
             'D0401': `折讓單開立通知-開立成功-${eachObject.custrecord_gw_voucher_number}`,
             'D0501': `折讓單作廢通知-開立成功-${eachObject.custrecord_gw_voucher_number}`
         }
-        const xmlMigType = invoiceutility.getMigType('APPLY', eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
+        const applyType = getVoucherStatusResponse.body.status === '作廢' ? 'CANCEL' : 'APPLY'
+        const xmlMigType = invoiceutility.getMigType(applyType, eachObject.custrecord_gw_voucher_type, eachObject.custrecord_gw_mig_type)
         log.debug({
             title: 'sendEmailNotification - xmlMigType',
             details: xmlMigType
