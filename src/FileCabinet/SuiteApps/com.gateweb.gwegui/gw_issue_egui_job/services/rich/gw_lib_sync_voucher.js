@@ -1587,7 +1587,7 @@ define([
                 xmlString += '</CancelInvoice>'
             } else {
                 xmlString += `<CancelAllowanceNumber>${voucherMainRecordObject.custrecord_gw_voucher_number}</CancelAllowanceNumber>`
-                xmlString += `<AllowanceDate><${voucherMainRecordObject.custrecord_gw_voucher_date}</AllowanceDate>`
+                xmlString += `<AllowanceDate>${voucherMainRecordObject.custrecord_gw_voucher_date}</AllowanceDate>`
                 xmlString = setGeneralValue(xmlString, voucherObject, voucherMainRecordObject)
                 xmlString += '</CancelAllowance>'
             }
