@@ -303,6 +303,17 @@ define([
     setSublistValue(apDocFields.fields.applyPeriod.id, fieldValue)
   }
 
+  function getFormatCodeById(selectedDocTypeId) {
+    var resultObject = search.lookupFields({
+      type: 'customrecord_gw_ap_doc_type_option',
+      id: selectedDocTypeId,
+      columns: ['custrecord_gw_ap_doc_type_value']
+    })
+    console.log('getFormatCodeById-resultObject', resultObject)
+
+    return resultObject['custrecord_gw_ap_doc_type_value']
+  }
+
   /**
    * <code>salesAmtChanged</code> event handler
    *
@@ -328,8 +339,11 @@ define([
    * @function salesAmtChanged
    */
   function salesAmtChanged(context) {
+    var docType = apDocTypeService.getDocTypeCodeByRecordId(getSublistValue(apDocFields.fields.docType.id))
+    var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
+    console.log('salesAmtChanged - docType | guiNumber', docType + ' | ' + guiNumber)
     var value = getCurrencySublistFieldValue(context.fieldId)
-    var calculatedTaxAmt = Math.round(value * 0.05)
+    var calculatedTaxAmt = docType === '22' && guiNumber !== '' ? 0 : Math.round(value * 0.05)
     setTaxAmt(calculatedTaxAmt)
     var taxAmt = getCurrencySublistFieldValue(apDocFields.fields.taxAmt.id)
     var totalAmt = value + taxAmt

@@ -733,17 +733,25 @@ define([
    * @function validateTaxAmt
    */
   function validateTaxAmt(context, value) {
+    console.log('in validateTaxAmt')
     var resultObj = {
       isValid: true,
       error: []
     }
     var salesAmt = getNumberSublistFieldValue(apDocFields.fields.salesAmt.id)
+    console.log('in validateTaxAmt - salesAmt', salesAmt)
     var taxAmt = value
+    console.log('in validateTaxAmt - taxAmt', taxAmt)
+    var docType = apDocTypeService.getDocTypeCodeByRecordId(
+        getNumberSublistFieldValue(apDocFields.fields.docType.id)
+    )
+    console.log('in validateTaxAmt - docType', docType)
+    var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
     if (!taxAmtValidator.isLengthValid(value)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtLengthError)
     }
-    if (!taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
+    if ((docType !== '22' || guiNumber === '') && !taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtOver5Error)
     }
