@@ -1974,6 +1974,12 @@ define([
             join: 'CUSTRECORD_GW_AP_DOC_DEDUCT_CODE'
         }))
         searchColumns.push('custrecord_gw_ap_doc_co_mark')
+        searchColumns.push(
+            search.createColumn({
+                name: 'custrecord_gw_ap_doc_consol_value',
+                join: 'custrecord_gw_ap_doc_co_mark'
+            })
+        )
         searchColumns.push('custrecord_gw_ap_doc_co_qty')
         searchColumns.push('custrecord_gw_ap_doc_custom_mark')
         searchColumns.push(
@@ -2010,6 +2016,14 @@ define([
         return getPendingSyncAPVoucherDataSearchObject
     }
 
+    function getConsolidationMark(APVoucherObject) {
+        return APVoucherObject['custrecord_gw_ap_doc_consol_value.custrecord_gw_ap_doc_co_mark']
+    }
+
+    function getConsolidationQuantity(APVoucherObject) {
+        return APVoucherObject['custrecord_gw_ap_doc_co_qty']
+    }
+
     function getRequestAPObject(APVoucherObject) {
         let requestObject = {
             invoiceNumber: APVoucherObject.custrecord_gw_ap_doc_gui_num,
@@ -2032,8 +2046,11 @@ define([
             customsClearanceMark: APVoucherObject.custrecord_gw_ap_doc_custom_mark,
             zeroTaxMark: APVoucherObject.custrecord_gw_ap_doc_zero_tax_mark,
             outputDate: APVoucherObject.custrecord_gw_ap_doc_close_date,
-            commonNumber: APVoucherObject.custrecord_gw_ap_doc_related_number,
-            deductionCode: APVoucherObject['custrecord_gw_ap_doc_deduct_value.CUSTRECORD_GW_AP_DOC_DEDUCT_CODE']
+            commonNumber: APVoucherObject.custrecord_gw_ap_doc_comm_num,
+            deductionCode: APVoucherObject['custrecord_gw_ap_doc_deduct_value.CUSTRECORD_GW_AP_DOC_DEDUCT_CODE'],
+            consolidationMark: getConsolidationMark(APVoucherObject),
+            consolidationQuantity: getConsolidationQuantity(APVoucherObject),
+            
         }
 
         log.debug({
