@@ -343,7 +343,7 @@ define([
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
     console.log('salesAmtChanged - docType | guiNumber', docType + ' | ' + guiNumber)
     var value = getCurrencySublistFieldValue(context.fieldId)
-    var calculatedTaxAmt = docType === '22' && guiNumber !== '' ? 0 : Math.round(value * 0.05)
+    var calculatedTaxAmt = ((docType === '22' || docType === '27') && guiNumber !== '') ? 0 : Math.round(value * 0.05)
     setTaxAmt(calculatedTaxAmt)
     var taxAmt = getCurrencySublistFieldValue(apDocFields.fields.taxAmt.id)
     var totalAmt = value + taxAmt

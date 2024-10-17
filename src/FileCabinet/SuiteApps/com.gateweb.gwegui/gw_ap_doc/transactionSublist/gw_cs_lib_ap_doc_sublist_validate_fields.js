@@ -751,7 +751,7 @@ define([
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtLengthError)
     }
-    if ((docType !== '22' || guiNumber === '') && !taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
+    if (((docType !== '22' && docType !== '27') || guiNumber === '') && !taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtOver5Error)
     }
