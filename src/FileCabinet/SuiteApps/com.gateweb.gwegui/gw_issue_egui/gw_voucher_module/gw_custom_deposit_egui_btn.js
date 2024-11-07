@@ -11,7 +11,7 @@ define(['N/ui/dialog', 'N/url', 'N/currentRecord'], function (
    * @copyright 2020 Gate Web, LLC
    * @author Walter Chou se06$gateweb.com.tw>
    *
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NScriptType ClientScript
    * @NModuleScope Public
    * @appliedtorecord Customer Deposit

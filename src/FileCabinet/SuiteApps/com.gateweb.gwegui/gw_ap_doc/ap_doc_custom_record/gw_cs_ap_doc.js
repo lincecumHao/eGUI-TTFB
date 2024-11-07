@@ -11,7 +11,7 @@ define([
    * @copyright 2020 Gateweb
    * @author Sean Lin <seanlin816@gmail.com>
    *
-   * @NApiVersion 2.x
+   * @NApiVersion 2.1
    * @NModuleScope Public
 
    * @NScriptType ClientScript

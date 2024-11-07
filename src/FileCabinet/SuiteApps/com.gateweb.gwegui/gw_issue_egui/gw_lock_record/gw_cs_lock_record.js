@@ -7,7 +7,7 @@ define(['N/record', 'N/url'], function (record, url) {
    * @copyright 2020 Gateweb
    * @author Sean Lin <seanlin816@gmail.com>
    *
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NModuleScope Public
 
    * @NScriptType ClientScript

@@ -11,7 +11,7 @@ define(['N/url', 'N/https', '../gw_download_pdf/gw_api_client'], function (
    * @copyright 2020 gateweb
    * @author Sean Lin <seanlin816@gmail.com>
    *
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NModuleScope Public
    * @NScriptType ClientScript
    */

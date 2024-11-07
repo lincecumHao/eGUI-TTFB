@@ -1,6 +1,6 @@
 define(['N/runtime', 'N/currentRecord', 'N/record', 'N/url', '../gw_common_utility/gw_common_invoice_utility'], function (runtime, currentRecord, record, url, invoiceutility) {
   /**
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NScriptType ClientScript
    * @NModuleScope Public
    */

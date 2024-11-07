@@ -1,6 +1,6 @@
 define(['N/currentRecord', 'N/search'], function (currentRecord, search) {
   /**
-   * @NApiVersion 2.0
+   * @NApiVersion 2.1
    * @NScriptType ClientScript
    * @NModuleScope Public
    */
