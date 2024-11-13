@@ -271,12 +271,6 @@ define([
     var _is_printed_paper = _voucher_record.getValue({
       fieldId: 'custrecord_gw_is_printed_paper',
     })
-    if (_is_printed_paper == true) {
-      var _print_paper_button = form.getButton({
-        id: 'custpage_print_document_button',
-      })
-      _print_paper_button.isDisabled = true
-    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     var _row01_fieldgroupid = form.addFieldGroup({
       id: 'row01_fieldgroupid',

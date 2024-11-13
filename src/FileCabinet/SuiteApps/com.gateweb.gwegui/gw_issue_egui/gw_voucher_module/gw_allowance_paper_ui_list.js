@@ -1143,12 +1143,6 @@ define([
     var _invoiceSubList = createInvoiceSubList(form)
 
     form.addButton({
-      id: 'custpage_print_document_button',
-      label: '列印折讓單',
-      functionName: 'printPDFSelected("ALLOWANCE", "PAPER")',
-    })
-
-    form.addButton({
       id: 'custpage_search_document_button',
       label: '查詢',
       functionName: 'searchResults()',

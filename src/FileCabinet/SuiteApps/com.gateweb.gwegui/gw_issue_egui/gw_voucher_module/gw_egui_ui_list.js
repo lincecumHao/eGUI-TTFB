@@ -777,11 +777,6 @@ define([
       functionName: 'printPDFSelected()',
     })
     form.addButton({
-      id: 'custpage_print_document_button',
-      label: '列印發票',
-      functionName: 'printPaperSelected()',
-    })
-    form.addButton({
       id: 'custpage_unlock_document_button',
       label: '失敗解鎖',
       functionName: 'unLockSelected()',

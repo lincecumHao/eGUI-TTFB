@@ -1197,12 +1197,6 @@ define([
     var _invoiceSubList = createInvoiceSubList(form)
 
     form.addButton({
-      id: 'custpage_print_document_button',
-      label: '列印發票',
-      functionName: 'printPDFSelected("EGUI","PAPER")',
-    })
-
-    form.addButton({
       id: 'custpage_search_document_button',
       label: '查詢',
       functionName: 'searchResults()',
