@@ -1321,8 +1321,9 @@ define([
       ) //稅額總計 -5.00
       var _ns_item_total_amount =
           stringutility.convertToFloat(result.amount) + stringutility.convertToFloat(result.taxamount)
-      if (stringutility.convertToFloat(result.quantity) < 0)
-        _ns_item_total_amount = -1 * _ns_item_total_amount
+      if(result.item.length > 0 && stringutility.convertToFloat(result.quantity) < 0) {
+        _ns_item_total_amount = Math.abs(stringutility.convertToFloat(result.amount)) + Math.abs(_ns_item_tax_amount)
+      }
 
       var _linesequencenumber = result.linesequencenumber //1
       var _line = result.line //1
@@ -1391,6 +1392,7 @@ define([
       var _quantity = result.quantity
       //20210909 walter 預設值設為1
       if (_quantity.trim().length == 0) _quantity = '1'
+      if( parseFloat(_quantity) < 0 ) _quantity = -1 * _quantity
 
       //單位
       var _unitabbreviation = result.unitabbreviation
