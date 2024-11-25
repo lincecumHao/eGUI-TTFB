@@ -2701,7 +2701,7 @@ define([
     var _tax_amount_field = form.getField({
       id: 'custpage_tax_amount'
     })
-    _tax_amount_field.defaultValue = _ns_SumTaxAmount
+    _tax_amount_field.defaultValue = _ns_SumTaxAmount.toFixed(_numericToFixed)
 
     var _toatl_amount_field = form.getField({
       id: 'custpage_total_amount'

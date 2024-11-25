@@ -577,7 +577,7 @@ define([
       _voucher_record.getValue({ fieldId: 'custrecord_gw_sales_amount' }) +
       _voucher_record.getValue({ fieldId: 'custrecord_gw_free_sales_amount' }) +
       _voucher_record.getValue({ fieldId: 'custrecord_gw_zero_sales_amount' })
-    _sales_amount.defaultValue = _total_sales_amount
+    _sales_amount.defaultValue = _total_sales_amount.toLocaleString()
     _sales_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
@@ -590,7 +590,7 @@ define([
     })
     _tax_amount.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_tax_amount',
-    })
+    }).toLocaleString()
     _tax_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
@@ -603,7 +603,7 @@ define([
     })
     _total_amount.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_total_amount',
-    })
+    }).toLocaleString()
     _total_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
@@ -620,7 +620,7 @@ define([
     var _balance_amount =
       _total_sales_amount -
       _voucher_record.getValue({ fieldId: 'custrecord_gw_discount_amount' })
-    _total_balance_amount.defaultValue = _balance_amount
+    _total_balance_amount.defaultValue = _balance_amount.toLocaleString()
 
     //可折稅額
     var _balance_tax_amount =
@@ -639,7 +639,7 @@ define([
     _total_balance_tax_amount.updateDisplayType({
       displayType: serverWidget.FieldDisplayType.DISABLED,
     })
-    _total_balance_tax_amount.defaultValue = _balance_tax_amount
+    _total_balance_tax_amount.defaultValue = _balance_tax_amount.toLocaleString()
     ///////////////////////////////////////////////////////////////////////////////////
     
     return _voucher_record

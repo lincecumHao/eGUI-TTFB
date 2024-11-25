@@ -96,7 +96,7 @@ define(['N/record',
 	    		_gui_total_amt = (parseFloat(_gui_total_amt)+parseFloat(_gui_tax_amt)).toString()  
 	    	} 
 	    	//稅額
-	  	    values['custbody_gw_gui_tax_amt'] = _gui_tax_amt
+	  	    values['custbody_gw_gui_tax_amt'] = _gui_tax_amt.toString()
 	  	    //發票期別
 		    values['custbody_gw_gui_tax_file_date'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_yearmonth'}) 
 		    //稅率  
@@ -107,18 +107,18 @@ define(['N/record',
 		    //發票號碼起號-custbody_gw_gui_num_start
 		    
 		    //總計
-		    values['custbody_gw_gui_total_amt'] = _gui_total_amt
+		    values['custbody_gw_gui_total_amt'] = _gui_total_amt.toString()
 		    //發票日期  
 		    var _gw_voucher_date = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_date'})
 	        values['custbody_gw_gui_date'] = convertStringToDate(_gw_voucher_date.toString())
 		    //發票不上傳
 		    if (_need_upload_egui_mig=='NONE') values['custbody_gw_gui_not_upload'] = true 
 		    //應稅銷售額
-		    values['custbody_gw_gui_sales_amt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'})    
+		    values['custbody_gw_gui_sales_amt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'}).toString()
 		    //免稅銷售額	
-		    values['custbody_gw_gui_sales_amt_tax_exempt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_free_sales_amount'}) 
+		    values['custbody_gw_gui_sales_amt_tax_exempt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_free_sales_amount'}).toString()
 		    //零稅銷售額 
-		    values['custbody_gw_gui_sales_amt_tax_zero'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_zero_sales_amount'})	 
+		    values['custbody_gw_gui_sales_amt_tax_zero'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_zero_sales_amount'}).toString()
 		    //發票部門
 		    values['custbody_gw_gui_department'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_dept_code'}) 
 		    //發票分類

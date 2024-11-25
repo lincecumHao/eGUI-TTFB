@@ -493,10 +493,12 @@ define([
       _voucher_record.getValue({ fieldId: 'custrecord_gw_sales_amount' }) +
       _voucher_record.getValue({ fieldId: 'custrecord_gw_free_sales_amount' }) +
       _voucher_record.getValue({ fieldId: 'custrecord_gw_zero_sales_amount' })
-    _sales_amount.defaultValue = _total_sales_amount
+    _sales_amount.defaultValue = _total_sales_amount.toLocaleString()
     _sales_amount.updateBreakType({
       breakType: serverWidget.FieldBreakType.STARTCOL,
     })
+    _sales_amount.updateDisplayType({ displayType: serverWidget.FieldDisplayType.DISABLED, })
+
     //總退稅額
     var _tax_amount = form.addField({
       id: 'custpage_tax_amount',
@@ -506,7 +508,9 @@ define([
     })
     _tax_amount.defaultValue = _voucher_record.getValue({
       fieldId: 'custrecord_gw_tax_amount',
-    })
+    }).toLocaleString()
+    _tax_amount.updateDisplayType({ displayType: serverWidget.FieldDisplayType.DISABLED, })
+
     ///////////////////////////////////////////////////////////////////////////////////
     return _voucher_record
   } //End Function
