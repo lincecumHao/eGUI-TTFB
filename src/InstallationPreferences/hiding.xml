@@ -14,8 +14,40 @@
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/services/email/eguiEmailTemplate.hbs</path>
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email/eguiEmailTemplate.ftl</path>
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui_job/services/email/eguiEmailTemplate.hbs</path>
-        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/transactionSublist/gw_cs_trans_ap_doc_sublist.js</path>
+        <!--new-->
+        <!--ap related-->
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/ap_doc_custom_record/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/application/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/employee_expense/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/field_validation/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/transactionSublist/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/vo/*</path>
+        <!--ar related-->
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_common_utility/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/library/*</path>
+        <path appliesTo="FILES">~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_print/*</path>
         <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_lock_record/gw_cs_lock_record.js</path>
-        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_ap_doc/ap_doc_custom_record/gw_cs_ap_doc.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_allowance_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_assignlog_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_assignlog_ui_searchhelp.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_cash_sale_open_egui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_cash_sale_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_creditmemo_load_egui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_custom_deposit_egui_btn.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_custom_deposit_open_egui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_deposit_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_document_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_egui_cancel_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_egui_common_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_egui_common_ui_event_v2.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_egui_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_invoice_open_voucher_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_invoice_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_invoice_ui_event_v2.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_invoice_ui_event_v3.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_invoice_ui_manual_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_voucher_apply_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_voucherview_ui_event.js</path>
+        <path>~/FileCabinet/SuiteApps/com.gateweb.gwegui/gw_issue_egui/gw_voucher_module/gw_cs_invoice_field_validator.js</path>
     </apply>
 </preference>
