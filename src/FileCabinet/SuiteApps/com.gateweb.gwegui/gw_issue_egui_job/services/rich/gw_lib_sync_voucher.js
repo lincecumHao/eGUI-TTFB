@@ -13,6 +13,7 @@ define([
     'N/record',
     'N/xml',
     'N/file',
+    'N/util',
     '../../../gw_issue_egui/gw_common_utility/gw_syncegui_to_document_utility',
     '../../../gw_issue_egui/gw_common_utility/gw_common_date_utility',
     '../../../gw_issue_egui/gw_common_utility/gw_common_string_utility',
@@ -30,6 +31,7 @@ define([
     record,
     xml,
     file,
+    util,
     synceguidocument,
     dateutility,
     stringutility,
@@ -1741,6 +1743,8 @@ define([
         searchColumns.push('custrecord_gw_customs_export_date')
         searchColumns.push('custrecord_gw_applicable_zero_tax')
         searchColumns.push('custrecord_gw_clearance_mark')
+        searchColumns.push('custrecord_gw_voucher_type')
+        searchColumns.push('custrecord_gw_ns_transaction')
 
         return searchColumns
     }
@@ -1795,6 +1799,22 @@ define([
             zeroTaxMark: voucherObject.custrecord_gw_applicable_zero_tax,
             outputDate: voucherObject.custrecord_gw_customs_export_date,
             commonNumber: voucherObject.custrecord_gw_customs_export_no
+        }
+
+        // Update Invoice Number when format is 33 and is ALLOWANCE
+        if (voucherObject.custrecord_gw_voucher_type === 'ALLOWANCE' &&
+          voucherObject.custrecord_gw_voucher_format_code === '33' &&
+          !util.isArray(voucherObject.custrecord_gw_ns_transaction) &&
+          voucherObject.custrecord_gw_ns_transaction?.value
+        ) {
+            let lookupFields = search.lookupFields({
+                type: "transaction",
+                id: voucherObject.custrecord_gw_ns_transaction.value,
+                columns: ['custbody_gw_gui_num_end']
+            });
+            if (lookupFields.custbody_gw_gui_num_end) {
+                requestObject.invoiceNumber = lookupFields.custbody_gw_gui_num_end;
+            }
         }
 
         log.debug({
