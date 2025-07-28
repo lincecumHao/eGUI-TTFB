@@ -1777,6 +1777,8 @@ define([
     }
 
     function getRequestObject(voucherObject) {
+        let allowanceFormat = [33, 34, '33', '34'];
+        let isAllowance = voucherObject.custrecord_gw_buyer === '0000000000' && !allowanceFormat.includes(voucherObject.custrecord_gw_voucher_format_code);
         let requestObject = {
             invoiceNumber: voucherObject.custrecord_gw_voucher_number,
             typeCode: voucherObject.custrecord_gw_voucher_format_code,
@@ -1786,8 +1788,8 @@ define([
             buyerName: voucherObject.custrecord_gw_buyer_name,
             seller: voucherObject.custrecord_gw_seller,
             sellerName: voucherObject.custrecord_gw_seller_name,
-            salesAmount: (voucherObject.custrecord_gw_buyer === '0000000000') ? voucherObject.custrecord_gw_total_amount : voucherObject.custrecord_gw_sales_amount,
-            taxAmount: (voucherObject.custrecord_gw_buyer === '0000000000') ? 0 : voucherObject.custrecord_gw_tax_amount,
+            salesAmount: isAllowance ? voucherObject.custrecord_gw_total_amount : voucherObject.custrecord_gw_sales_amount,
+            taxAmount: isAllowance ? 0 : voucherObject.custrecord_gw_tax_amount,
             totalAmount: voucherObject.custrecord_gw_total_amount,
             taxType: voucherObject.custrecord_gw_tax_type,
             freeTaxSalesAmount: voucherObject.custrecord_gw_free_sales_amount,
