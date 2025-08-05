@@ -1837,10 +1837,6 @@ define(['N/format',
               fieldId: 'custrecord_gw_voucher_status',
               value: _status
             })
-            _voucherMainRecord.setValue({
-              fieldId: 'custrecord_gw_voucher_upload_status',
-              value: _default_upload_status
-            })
 
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_sales_amount',
@@ -1882,6 +1878,11 @@ define(['N/format',
             _voucherMainRecord.setValue({
               fieldId: 'custrecord_gw_need_upload_egui_mig',
               value: mainObj.assign_log_type
+            })
+
+            _voucherMainRecord.setValue({
+              fieldId: 'custrecord_gw_voucher_upload_status',
+              value: mainObj.assign_log_type === 'NONE' ? 'C' : _default_upload_status
             })
 
             _voucherMainRecord.setValue({

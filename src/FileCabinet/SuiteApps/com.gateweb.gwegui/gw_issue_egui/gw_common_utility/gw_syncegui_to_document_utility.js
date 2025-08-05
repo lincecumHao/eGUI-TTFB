@@ -138,9 +138,7 @@ define(['N/record',
 		    values['custbody_gw_gui_total_amt'] = _gui_total_amt.toString()
 		    //發票日期  
 		    var _gw_voucher_date = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_date'})
-	        values['custbody_gw_gui_date'] = convertStringToDate(_gw_voucher_date.toString())
-		    //發票不上傳
-		    if (_need_upload_egui_mig=='NONE') values['custbody_gw_gui_not_upload'] = true 
+			  values['custbody_gw_gui_date'] = format.format({value: convertStringToDate(_gw_voucher_date.toString()), type: format.Type.DATE})
 		    //應稅銷售額
 		    values['custbody_gw_gui_sales_amt'] = voucher_main_record.getValue({fieldId: 'custrecord_gw_sales_amount'}).toString()
 		    //免稅銷售額	
@@ -159,8 +157,10 @@ define(['N/record',
 		    //開立狀態   
 		    var _gw_voucher_status = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_status'})
 		    var _gw_voucher_upload_status = voucher_main_record.getValue({fieldId: 'custrecord_gw_voucher_upload_status'})
-		    var _need_upload_egui_mig = voucher_main_record.getValue({fieldId: 'custrecord_gw_need_upload_egui_mig'})
-		        	    
+			  var _need_upload_egui_mig = voucher_main_record.getValue({fieldId: 'custrecord_gw_need_upload_egui_mig'})
+			  //發票不上傳
+			  if (_need_upload_egui_mig=='NONE') values['custbody_gw_gui_not_upload'] = true
+
 		    values['custbody_gw_evidence_issue_status'] = getGwEvidenceStatus(_gw_voucher_status, _gw_voucher_upload_status, _need_upload_egui_mig)
 		    //憑證格式代號 
 		    var _mof_code = voucher_main_record.getValue({fieldId: 'custrecord_gw_invoice_type'})
@@ -207,7 +207,7 @@ define(['N/record',
 	 return new Date(_year,_month,_day) 
   }	
   
-  function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {   	
+  function getGwEvidenceStatus(gw_voucher_status, voucher_upload_status, need_upload_egui_mig) {
 	var _gw_evidence_status_id = -1
 	
 	  log.debug('getGwEvidenceStatus', 'gw_voucher_status='+gw_voucher_status+',voucher_upload_status='+voucher_upload_status+',need_upload_egui_mig='+need_upload_egui_mig)
