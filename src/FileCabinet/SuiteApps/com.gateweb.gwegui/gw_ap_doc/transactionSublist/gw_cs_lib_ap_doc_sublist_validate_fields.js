@@ -14,7 +14,8 @@ define([
   '../field_validation/gw_lib_field_validation_taxable_sales_amt',
   '../field_validation/gw_lib_field_validation_tax_exempt_sales_amt',
   '../field_validation/gw_lib_field_validation_tax_zero_sales_amt',
-  'N/search'
+  'N/search',
+  '../../gw_issue_egui/gw_common_utility/gw_common_string_utility',
 ], function (
   stringUtil,
   apDocFields,
@@ -31,7 +32,8 @@ define([
   salesAmtValidator,
   taxExemptSalesAmtValidator,
   taxZeroSalesAmtValidator,
-  search
+  search,
+  stringUtility
 ) {
   /**
    * Module Description...
@@ -780,6 +782,49 @@ define([
 
   //endregion
 
+  const gwConfig = {};
+  const gwConfigRecordId = 'customrecord_gw_voucher_properties';
+  function getConfig(groupName, key) {
+    if(Object.keys(gwConfig).length === 0 || !Object.prototype.hasOwnProperty.call(gwConfig, key)) {
+      const configSearch = search.create({
+        type: gwConfigRecordId,
+        columns: [
+          search.createColumn({ name: 'custrecord_gw_voucher_property_id' }),
+          search.createColumn({ name: 'custrecord_gw_voucher_property_value' }),
+          search.createColumn({ name: 'custrecord_gw_voucher_property_note' }),
+          search.createColumn({ name: 'custrecord_gw_netsuite_id_value' }),
+          search.createColumn({ name: 'custrecord_gw_netsuite_id_text' })
+        ]
+      });
+
+      const filters = []
+      filters.push(['custrecord_gw_voucher_group_type', search.Operator.IS, groupName]);
+      configSearch.filterExpression = filters
+
+      configSearch.run().each(function (result) {
+        let value = result.getValue({
+          name: 'custrecord_gw_voucher_property_value'
+        })
+        let key = result.getValue({name: 'custrecord_gw_voucher_property_id'})
+        gwConfig[key] = value;
+        return true
+      });
+    }
+    return Object.prototype.hasOwnProperty.call(gwConfig, key) ? gwConfig[key] : null;
+  }
+
+  function getTaxDiff(salesAmt, taxAmt) {
+    return Math.abs(taxAmt - getRegularTaxAmt(salesAmt))
+  }
+
+  function getRegularTaxAmt(salesAmt) {
+    return Math.round((salesAmt * 5) / 100)
+  }
+
+  const CONSOLIDATE_MARK = {
+    SUMMARY: 'A',
+  }
+
   //region validate tax amount
   /**
    * <code>validateTaxAmt</code> event handler
@@ -823,14 +868,38 @@ define([
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtLengthError)
     }
-    if (((docType !== '22' && docType !== '27') || guiNumber === '') && !taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
+
+    var consolidationQty = getSublistValue(apDocFields.fields.consolidationQty.id)
+    var memo =
+      apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
+        getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
+      )
+    const taxDiffAllowance = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_TAX_DIFF_ALLOWANCE'));
+    const apSummaryDocCount = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_SUM_DOC_COUNT'));
+    const apOverSummaryDocTaxDiff = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_OVER_SUM_DOC_TAX_DIFF'));
+    const taxDiff = getTaxDiff(salesAmt, taxAmt);
+
+    if(( docType === '25' || docType === '26' || docType === '27') && memo === CONSOLIDATE_MARK.SUMMARY) {
+      if(taxDiff > taxDiffAllowance) {
+        // 稅差大於允許值
+        if(consolidationQty <= apSummaryDocCount) {
+          // 如果匯總數量 <= AP 設定允許值
+          resultObj.isValid = false
+          resultObj.error.push(GwError.TaxAmtOverError(taxDiffAllowance))
+        } else {
+          if(taxDiff > (taxDiffAllowance + ((consolidationQty - apSummaryDocCount) * apOverSummaryDocTaxDiff))) {
+            resultObj.isValid = false
+            resultObj.error.push(GwError.TaxAmtOverError(taxDiffAllowance + ((consolidationQty - apSummaryDocCount) * apOverSummaryDocTaxDiff)))
+          }
+        }
+      }
+    } else if (((docType !== '22' && docType !== '27') || guiNumber === '') && !taxAmtValidator.isTaxAmtInAccetableRange(salesAmt, taxAmt)) {
       resultObj.isValid = false
       resultObj.error.push(GwError.TaxAmtOver5Error)
     }
 
-    var consolidationQty = getSublistValue(apDocFields.fields.consolidationQty.id)
-    
-    if (docType === '26' || docType === '27' ) { 
+
+    if (docType === '26' || docType === '27' ) {
       if (!taxAmtValidator.isTaxTotalValid(value, consolidationQty)) {
         resultObj.isValid = false
         resultObj.error.push(GwError.TaxAmtOver500Error)
@@ -1004,7 +1073,19 @@ define([
       isValid: true,
       error: []
     }
-    // TODO Add validateConsolidationQty logic
+    var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
+    var consolidationQty = getSublistValue(apDocFields.fields.consolidationQty.id)
+    var memo =
+      apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
+        getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
+      )
+    if(( docType === '25' || docType === '26' || docType === '27') && memo === CONSOLIDATE_MARK.SUMMARY) {
+      const MIN_CONSOLIDATION_QTY = 1;
+      if(!consolidationQty || consolidationQty <= MIN_CONSOLIDATION_QTY) {
+        resultObj.isValid = false
+        resultObj.error.push(GwError.ConsolidationQty)
+      }
+    }
     return resultObj
   }
 

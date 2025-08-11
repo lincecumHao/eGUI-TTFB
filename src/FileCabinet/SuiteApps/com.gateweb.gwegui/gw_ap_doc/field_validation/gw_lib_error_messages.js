@@ -170,6 +170,13 @@ define([], function () {
     message: 'Tax amount is over 5 dollar range',
     chtMessage: '稅差超過5元',
   }
+  exports.TaxAmtOverError = function(x) {
+    return {
+      code: 'TAX_AMOUNT_EXCEED_FIVE_DOLLAR',
+        message: 'Tax amount is over 5 dollar range',
+      chtMessage: `稅差超過${x}元`,
+    }
+  }
   exports.TaxAmtOver500Error = {
     code: 'TAX_AMOUNT_EXCEED_FIVE_HUNDRED',
     message: 'Tax amount is over 500 dollar ＊ consolidationQty',
@@ -186,6 +193,13 @@ define([], function () {
     code: 'TAX_ID_NOT_VALID',
     message: 'Tax id is not a valid tax id',
     chtMessage: '非正確統編',
+  }
+
+  // 匯總數量
+  exports.ConsolidationQty = {
+    code: 'CONSOLIDATION_QTY_ERROR',
+    message: 'Consolidation qty should be greater then 1 if 匯總或分攤註記 is "A-彙加"',
+    chtMessage: '如 "匯總或分攤註記" 為 "A-彙加", "匯總數量" 應大於 1',
   }
   return exports
 })
