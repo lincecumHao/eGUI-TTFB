@@ -1,6 +1,6 @@
 <centercategory scriptid="custcentercategory_gw_report_accounting">
   <center>ACCOUNTCENTER</center>
-  <centertab>[appid=com.gateweb.gwegui, scriptid=custcentertab_gw_egui_accounting]</centertab>
+  <centertab>[scriptid=custcentertab_gw_egui_accounting]</centertab>
   <label>相關報表</label>
   <links>
     <link>
@@ -18,6 +18,12 @@
     <link>
       <linklabel>每期開立發票查詢</linklabel>
       <linkobject>[scriptid=customsearch_gw_gui_output_report]</linkobject>
+      <linktasktype>SRCH_RSLT</linktasktype>
+      <shortlist>F</shortlist>
+    </link>
+    <link>
+      <linklabel>重複開立E-GUI檢查</linklabel>
+      <linkobject>[scriptid=customsearch_gw_gui_duplicate_gui_chk]</linkobject>
       <linktasktype>SRCH_RSLT</linktasktype>
       <shortlist>F</shortlist>
     </link>

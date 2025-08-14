@@ -21,5 +21,11 @@
       <linktasktype>SRCH_RSLT</linktasktype>
       <shortlist>F</shortlist>
     </link>
+    <link>
+      <linklabel>重複開立E-GUI檢查</linklabel>
+      <linkobject>[scriptid=customsearch_gw_gui_duplicate_gui_chk]</linkobject>
+      <linktasktype>SRCH_RSLT</linktasktype>
+      <shortlist>F</shortlist>
+    </link>
   </links>
 </centercategory>
