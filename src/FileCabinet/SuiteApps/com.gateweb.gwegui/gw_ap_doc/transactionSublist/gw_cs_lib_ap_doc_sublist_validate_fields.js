@@ -270,7 +270,7 @@ define([
     var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
     docType = docType ? Number(docType) : 0;
 
-    console.log('validateCommonNumber, docType', docType, typeof docType);
+    // console.log('validateCommonNumber, docType', docType, typeof docType);
 
     var consolidationMark =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
@@ -341,7 +341,7 @@ define([
         sublistId, line, fieldId: 'custrecord_gw_ap_doc_acct_period'
       });
       var key = getKey(period, commonNumberInTheList);
-      console.log(commonNumberInTheList, commonNumber, period, currentPeriod, key, currentKey);
+      // console.log(commonNumberInTheList, commonNumber, period, currentPeriod, key, currentKey);
       if(key === currentKey) count++;
     }
     if(count >= 1 && lineCount ) {
@@ -372,7 +372,7 @@ define([
       tranIds.push(result.getText({name: 'custrecord_gw_apt_doc_tran_id'}));
       return true;
     });
-    console.log(tranIds);
+    // console.log(tranIds);
     if(tranIds.length >= 1) {
       resultObj.isValid = false
       resultObj.error.push(GwError.CommonNumberMustNotDuplicate(tranIds))

@@ -10,19 +10,13 @@ define([
     'N/https',
     'N/record',
     'N/search',
+    'N/util',
+    'N/runtime',
     '../../library/gw_date_util',
     '../record/vendorBill',
     '../record/vendorPrepayment',
     '../record/expenseReport'
-], (
-    https,
-    record,
-    search,
-    dateUtil,
-    vendorBill,
-    vendorPrepayment,
-    expenseReport
-) => {
+], (https, record, search, util, runtime, dateUtil, vendorBill, vendorPrepayment, expenseReport) => {
     let exports = {};
 
     const RECORD_ID_MAPPING = {
@@ -125,6 +119,19 @@ define([
         return currencyId;
     }
 
+    function setCustomFields(transactionObject, recordObject) {
+        if (transactionObject.custom && util.isObject(transactionObject.custom)) {
+            Object.keys(transactionObject.custom).forEach((fieldId) => {
+                let value = transactionObject.custom[fieldId];
+                recordObject.setValue({ fieldId, value });
+            });
+        }
+    }
+
+    function isCompanyEnableSubsidiary() {
+        return runtime.isFeatureInEffect({ feature: 'SUBSIDIARIES' });
+    }
+
     function createVendorPrepayment(transactionObject) {
         log.audit({ title: 'createVendorPrepayment', details: 'start...' });
         let resultObject = {
@@ -134,7 +141,7 @@ define([
         };
         try {
             const recordObject = record.create({
-                type: RECORD_ID_MAPPING[transactionObject.Type],
+                type: RECORD_ID_MAPPING[transactionObject.type],
                 isDynamic: true
             });
 
@@ -144,23 +151,12 @@ define([
 
             vendorPrepayment.allFields.forEach(function (prop) {
                 let fieldId = vendorPrepayment.fields[prop].internalId;
-                let value = transactionObject[prop];
+                let value = vendorPrepayment.fields[prop].func ? vendorPrepayment.fields[prop].func(transactionObject[prop]) : transactionObject[prop];
                 if (value) {
-                    if (prop === 'Date') {
-                        value = new Date(
-                            dateUtil.getDateWithFormat(
-                                value,
-                                'YYYY-MM-DD',
-                                'YYYY/MM/DD'
-                            )
-                        );
-                    }
-                    if (prop === 'Account') {
-                        value = getAccountIdByAccountNumber(value);
-                    }
                     recordObject.setValue({ fieldId, value });
                 }
             });
+            setCustomFields(transactionObject, recordObject);
 
             resultObject.recordId = recordObject.save({
                 ignoreMandatoryFields: true,
@@ -208,6 +204,40 @@ define([
         return accountId || accountNumber;
     }
 
+    function formatDate(value) {
+        return new Date(dateUtil.getDateWithFormat(value, 'YYYY-MM-DD', 'YYYY/MM/DD'));
+    }
+
+    function setHeaderFields(recordObject, transactionObject, fields, recordTypeObject) {
+        fields.forEach(function (prop) {
+            let fieldId = recordTypeObject.fields[prop].internalId;
+            let value = transactionObject[prop];
+            if (recordTypeObject.fields[prop].func) {
+                value = recordTypeObject.fields[prop].func(value, transactionObject);
+            }
+            if (value) {
+                recordObject.setValue({ fieldId, value });
+            }
+        });
+    }
+
+    function setSublist(recordObject, transactionObject, lineObjectArray, sublistId, fields, recordTypeObject) {
+        for (let itemLine = 0; itemLine < lineObjectArray.length; itemLine++) {
+            recordObject.selectNewLine({ sublistId });
+            fields.forEach(function (prop) {
+                let fieldId = recordTypeObject.fields[prop].internalId;
+                let value = lineObjectArray[itemLine][prop];
+                if (recordTypeObject.fields[prop].func) {
+                    value = recordTypeObject.fields[prop].func(value, transactionObject);
+                }
+                if (value) {
+                    recordObject.setCurrentSublistValue({ sublistId, fieldId, value });
+                }
+            });
+            recordObject.commitLine({ sublistId });
+        }
+    }
+
     function createVendorBill(transactionObject) {
         log.audit({ title: 'createVendorBill', details: 'start...' });
         let resultObject = {
@@ -217,15 +247,15 @@ define([
         };
         try {
             let recordObject = null;
-            let type = transactionObject.Type;
+            let type = transactionObject.type;
             if (transactionObject.transactions) {
                 transactionObject = transactionObject.transactions;
             }
 
-            if (transactionObject.POID) {
+            if (transactionObject.poid) {
                 recordObject = record.transform({
                     fromType: record.Type.PURCHASE_ORDER,
-                    fromId: transactionObject.POID,
+                    fromId: transactionObject.poid,
                     toType: RECORD_ID_MAPPING[type],
                     isDynamic: true
                 });
@@ -236,88 +266,36 @@ define([
                 });
             }
 
-            vendorBill.allHeaderFields.forEach(function (prop) {
-                let fieldId = vendorBill.fields[prop].internalId;
-                let value = transactionObject[prop];
-                log.debug({
-                    title: 'set header field value',
-                    details: {
-                        fieldId,
-                        value
-                    }
-                });
-                if (value) {
-                    if (prop === 'Date' || prop === 'DueDate') {
-                        value = new Date(
-                            dateUtil.getDateWithFormat(
-                                transactionObject[prop],
-                                'YYYY-MM-DD',
-                                'YYYY/MM/DD'
-                            )
-                        );
-                    }
-                    if (
-                        (transactionObject[prop] && fieldId !== 'entity') ||
-                        (fieldId === 'entity' && !transactionObject.POID)
-                    ) {
-                        recordObject.setValue({ fieldId, value });
-                    }
-                }
-            });
+            setHeaderFields(recordObject, transactionObject, vendorBill.allHeaderFields, vendorBill)
+            setCustomFields(transactionObject, recordObject);
 
             if (
-                transactionObject.POID &&
-                transactionObject.BillItemDetail &&
-                transactionObject.BillItemDetail.length > 0
+                transactionObject.poid &&
+                transactionObject.billItemDetail &&
+                transactionObject.billItemDetail.length > 0
             ) {
                 //TODO - update item line
                 const itemSublistId = 'item';
                 let itemLine = recordObject.getLineCount({
                     sublistId: itemSublistId
                 });
-                let currentLine = 0;
                 log.debug({
                     title: 'createVendorBill - itemLine - before remove',
-                    details: recordObject.getLineCount({
-                        sublistId: itemSublistId
-                    })
+                    details: itemLine
                 });
+                let currentLine = 0;
                 do {
                     recordObject.selectLine({
                         sublistId: itemSublistId,
                         line: currentLine
                     });
-                    const itemId = recordObject.getCurrentSublistValue({
-                        sublistId: itemSublistId,
-                        fieldId: 'item'
-                    });
                     const orderLine = recordObject.getCurrentSublistValue({
                         sublistId: itemSublistId,
                         fieldId: 'orderline'
                     });
-                    const rate = recordObject.getCurrentSublistValue({
-                        sublistId: itemSublistId,
-                        fieldId: 'rate'
+                    const matchedItemObject = transactionObject.billItemDetail.find(function (lineObject) {
+                        return lineObject.lineID == orderLine;
                     });
-                    const amount = recordObject.getCurrentSublistValue({
-                        sublistId: itemSublistId,
-                        fieldId: 'amount'
-                    });
-                    log.debug({
-                        title: 'createVendorBill - line info',
-                        details: {
-                            itemId,
-                            orderLine,
-                            rate,
-                            amount
-                        }
-                    });
-                    const matchedItemObject =
-                        transactionObject.BillItemDetail.find(function (
-                            lineObject
-                        ) {
-                            return lineObject.LineID == orderLine;
-                        });
                     log.debug({
                         title: 'createVendorBill - matchedItemObject',
                         details: matchedItemObject
@@ -326,6 +304,9 @@ define([
                         vendorBill.allItemLineFields.forEach(function (prop) {
                             let fieldId = vendorBill.fields[prop].internalId;
                             let value = matchedItemObject[prop];
+                            if (vendorBill.fields[prop].func) {
+                                value = vendorBill.fields[prop].func(value, transactionObject);
+                            }
                             log.debug({
                                 title: 'before update item line',
                                 details: {
@@ -364,42 +345,27 @@ define([
                         sublistId: itemSublistId
                     })
                 });
+            } else if (transactionObject.billItemDetail && transactionObject.billItemDetail.length > 0) {
+                let fields = vendorBill.allItemLineFields;
+                setSublist(
+                    recordObject,
+                    transactionObject,
+                    transactionObject.billItemDetail,
+                    'item',
+                    fields,
+                    vendorBill
+                );
             }
-            if (
-                transactionObject.BillExpenseDetail &&
-                transactionObject.BillExpenseDetail.length > 0
-            ) {
-                //TODO - add expense line
-                for (
-                    let expenseLine = 0;
-                    expenseLine < transactionObject.BillExpenseDetail.length;
-                    expenseLine++
-                ) {
-                    const expenseSublistId = 'expense';
-                    recordObject.selectNewLine({ sublistId: expenseSublistId });
-                    vendorBill.allExpenseLineFields.forEach(function (prop) {
-                        let fieldId = vendorBill.fields[prop].internalId;
-                        let value =
-                            transactionObject.BillExpenseDetail[expenseLine][
-                                prop
-                            ];
-                        log.debug({
-                            title: 'adding expense line',
-                            details: { fieldId, value }
-                        });
-                        if (fieldId === 'account' && value) {
-                            value = getAccountIdByAccountNumber(value);
-                        }
-                        if (value) {
-                            recordObject.setCurrentSublistValue({
-                                sublistId: expenseSublistId,
-                                fieldId,
-                                value
-                            });
-                        }
-                    });
-                    recordObject.commitLine({ sublistId: expenseSublistId });
-                }
+            if (transactionObject.billExpenseDetail && transactionObject.billExpenseDetail.length > 0) {
+                let fields = vendorBill.allExpenseLineFields;
+                setSublist(
+                    recordObject,
+                    transactionObject,
+                    transactionObject.billExpenseDetail,
+                    'expense',
+                    fields,
+                    vendorBill
+                );
             }
 
             resultObject.recordId = recordObject.save({
@@ -427,7 +393,7 @@ define([
         };
         try {
             const recordObject = record.create({
-                type: RECORD_ID_MAPPING[transactionObject.Type],
+                type: RECORD_ID_MAPPING[transactionObject.type],
                 isDynamic: true
             });
 
@@ -435,71 +401,19 @@ define([
                 transactionObject = transactionObject.transactions;
             }
 
-            expenseReport.allHeaderFields.forEach(function (prop) {
-                let fieldId = expenseReport.fields[prop].internalId;
-                let value = transactionObject[prop];
-                if (value) {
-                    if (prop === 'Date' || prop === 'DueDate') {
-                        value = new Date(
-                            dateUtil.getDateWithFormat(
-                                transactionObject[prop],
-                                'YYYY-MM-DD',
-                                'YYYY/MM/DD'
-                            )
-                        );
-                    }
-                    if (prop === 'Currency') {
-                        value = getCurrencyIdByCode(transactionObject[prop]);
-                    }
-                    recordObject.setValue({ fieldId, value });
-                }
-            });
+            setHeaderFields(recordObject, transactionObject, expenseReport.allHeaderFields, expenseReport)
+            setCustomFields(transactionObject, recordObject);
 
-            if (
-                transactionObject.Expenses &&
-                transactionObject.Expenses.length > 0
-            ) {
-                //TODO - add item line
-                const expenseSublistId = 'expense';
-                for (
-                    let expenseLine = 0;
-                    expenseLine < transactionObject.Expenses.length;
-                    expenseLine++
-                ) {
-                    recordObject.selectNewLine({ sublistId: expenseSublistId });
-                    expenseReport.allLineFields.forEach(function (prop) {
-                        let fieldId = expenseReport.fields[prop].internalId;
-                        let value =
-                            transactionObject.Expenses[expenseLine][prop];
-                        if (prop === 'ExpenseDate') {
-                            value = new Date(
-                                dateUtil.getDateWithFormat(
-                                    transactionObject.Expenses[expenseLine][
-                                        prop
-                                    ],
-                                    'YYYY-MM-DD',
-                                    'YYYY/MM/DD'
-                                )
-                            );
-                        }
-                        if (prop === 'ExpenseCurrency') {
-                            value = getCurrencyIdByCode(
-                                transactionObject.Expenses[expenseLine][prop]
-                            );
-                        }
-                        if (prop === 'ExpenseAccount') {
-                            value = getAccountIdByAccountNumber(value);
-                        }
-                        if (value) {
-                            recordObject.setCurrentSublistValue({
-                                sublistId: expenseSublistId,
-                                fieldId,
-                                value
-                            });
-                        }
-                    });
-                    recordObject.commitLine({ sublistId: expenseSublistId });
-                }
+            if (transactionObject.expenses && transactionObject.expenses.length > 0) {
+                let fields = expenseReport.allLineFields;
+                setSublist(
+                    recordObject,
+                    transactionObject,
+                    transactionObject.expenses,
+                    'expense',
+                    fields,
+                    expenseReport
+                );
             }
 
             resultObject.recordId = recordObject.save({
@@ -526,10 +440,10 @@ define([
         });
         log.audit({
             title: 'before - createAccountPayableTransaction - RECORD_ID_MAPPING[transactionObject.Type]',
-            details: RECORD_ID_MAPPING[transactionObject.Type]
+            details: RECORD_ID_MAPPING[transactionObject.type]
         });
         let response = {};
-        switch (RECORD_ID_MAPPING[transactionObject.Type]) {
+        switch (RECORD_ID_MAPPING[transactionObject.type]) {
             case record.Type.VENDOR_PREPAYMENT:
                 response = createVendorPrepayment(transactionObject);
                 break;
@@ -562,8 +476,7 @@ define([
             if (eachRequest.isValid) {
                 eachRequest.GUIs.forEach(function (eachGUI) {
                     delete eachGUI['docType'];
-                    if (eachRequest.recordId)
-                        eachGUI['transaction'] = eachRequest.recordId;
+                    if (eachRequest.recordId) eachGUI['transaction'] = eachRequest.recordId;
                     log.audit({
                         title: 'createAccountPayableVoucher - eachGUI',
                         details: eachGUI
@@ -590,11 +503,9 @@ define([
                 if (responseBody.length) {
                     responseBody.forEach(function (eachResultObject, index) {
                         if (eachResultObject.status === '1') {
-                            eachRequest.GUIs[index].voucherRecordId =
-                                eachResultObject.data.internalId;
+                            eachRequest.GUIs[index].voucherRecordId = eachResultObject.data.internalId;
                         } else {
-                            eachRequest.GUIs[index].errorMessage =
-                                eachResultObject.errors;
+                            eachRequest.GUIs[index].errorMessage = eachResultObject.errors;
                             eachRequest.isValid = false;
                         }
                     });
@@ -627,18 +538,12 @@ define([
             if (INTEGRATION_OPTION[integrationOption] === 'VALIDATION') {
                 delete eachResultObject['transactionId'];
                 delete eachResultObject['consolidateResult'];
-            } else if (
-                INTEGRATION_OPTION[integrationOption] === 'CREATE_TRANSACTION'
-            ) {
+            } else if (INTEGRATION_OPTION[integrationOption] === 'CREATE_TRANSACTION') {
                 delete eachResultObject['consolidateResult'];
                 delete eachResultObject['consolidateErrorMessage'];
             }
             if (eachObject.recordId) {
-                if (
-                    eachObject.isValid ||
-                    INTEGRATION_OPTION[integrationOption] ===
-                        'CREATE_TRANSACTION'
-                ) {
+                if (eachObject.isValid || INTEGRATION_OPTION[integrationOption] === 'CREATE_TRANSACTION') {
                     eachResultObject.transactionId = eachObject.recordId;
                 } else {
                     // TODO - remove transaction
@@ -670,32 +575,17 @@ define([
                         voucherRecordId: null
                     };
                     if (eachObject.isValid && eachGUI.voucherRecordId) {
-                        eachConsolidatedObject.voucherRecordId =
-                            eachGUI.voucherRecordId;
+                        eachConsolidatedObject.voucherRecordId = eachGUI.voucherRecordId;
                     }
                     if (!eachObject.isValid) {
-                        if (
-                            eachGUI.errorMessage &&
-                            eachGUI.errorMessage.length > 0
-                        ) {
-                            eachConsolidatedObject.errorMessage =
-                                eachGUI.errorMessage;
-                        } else if (
-                            eachObject.errorMessage &&
-                            eachObject.errorMessage.length > 0
-                        ) {
-                            eachConsolidatedObject.errorMessage =
-                                eachObject.errorMessage;
+                        if (eachGUI.errorMessage && eachGUI.errorMessage.length > 0) {
+                            eachConsolidatedObject.errorMessage = eachGUI.errorMessage;
+                        } else if (eachObject.errorMessage && eachObject.errorMessage.length > 0) {
+                            eachConsolidatedObject.errorMessage = eachObject.errorMessage;
                         }
-                        eachResultObject.consolidateErrorMessage.push(
-                            eachConsolidatedObject
-                        );
-                    } else if (
-                        INTEGRATION_OPTION[integrationOption] !== 'VALIDATION'
-                    ) {
-                        eachResultObject.consolidateResult.push(
-                            eachConsolidatedObject
-                        );
+                        eachResultObject.consolidateErrorMessage.push(eachConsolidatedObject);
+                    } else if (INTEGRATION_OPTION[integrationOption] !== 'VALIDATION') {
+                        eachResultObject.consolidateResult.push(eachConsolidatedObject);
                     }
                 });
             }
@@ -738,6 +628,10 @@ define([
     exports.createAccountPayableVoucher = createAccountPayableVoucher;
     exports.getConsolidatedResultObject = getConsolidatedResultObject;
     exports.getSetupOption = getSetupOption;
+    exports.getAccountIdByAccountNumber = getAccountIdByAccountNumber;
+    exports.isCompanyEnableSubsidiary = isCompanyEnableSubsidiary;
+    exports.formatDate = formatDate;
+    exports.getCurrencyIdByCode = getCurrencyIdByCode;
     exports.integrationOptionMapping = INTEGRATION_OPTION;
     exports.GUI_OBJECT_PROPERTIES = GUI_OBJECT_PROPERTIES;
     return exports;

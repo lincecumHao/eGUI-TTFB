@@ -7,127 +7,152 @@
  * @NModuleScope Public
  */
 define([
-    '../../library/ramda.min'
-], (
-    ramda
-) => {
-
+    '../../library/ramda.min',
+    '../ap_library/gw_ap_lib.js'
+], (ramda, apIntegrationUtil) => {
     let exports = {};
 
     let fieldConfig = {
-        Employee: {
+        employee: {
             internalId: 'entity',
             isHeader: true,
             isLine: false
         },
-        Date: {
+        date: {
             internalId: 'trandate',
             isHeader: true,
-            isLine: false
+            isLine: false,
+            func: (value) => apIntegrationUtil.formatDate(value)
         },
-        DueDate: {
+        dueDate: {
             internalId: 'duedate',
             isHeader: true,
-            isLine: false
+            isLine: false,
+            func: (value) => apIntegrationUtil.formatDate(value)
         },
-        Currency: {
+        currency: {
             internalId: 'currency',
             isHeader: true,
-            isLine: false
+            isLine: false,
+            func: (value) => apIntegrationUtil.getCurrencyIdByCode(value)
         },
-        Memo: {
+        memo: {
             internalId: 'memo',
             isHeader: true,
             isLine: false
         },
-        Advance: {
+        expenseMemo: {
+            internalId: 'memo',
+            isHeader: false,
+            isLine: true
+        },
+        advance: {
             internalId: 'advance',
             isHeader: true,
             isLine: false
         },
-        Complete: {
+        complete: {
             internalId: 'complete',
             isHeader: true,
             isLine: false
         },
-        SupervisorApproval: {
+        supervisorApproval: {
             internalId: 'supervisorapproval',
             isHeader: true,
             isLine: false
         },
-        AccountingApproval: {
+        accountingApproval: {
             internalId: 'accountingapproval',
             isHeader: true,
             isLine: false
         },
-        ExpenseDate: {
+        expenseDate: {
             internalId: 'expensedate',
             isHeader: false,
-            isLine: true
+            isLine: true,
+            func: (value) => apIntegrationUtil.formatDate(value)
         },
-        ExpenseAccount: {
+        expenseAccount: {
             internalId: 'expenseaccount',
             isHeader: false,
-            isLine: true
+            isLine: true,
+            func: (value) => apIntegrationUtil.getAccountIdByAccountNumber(value)
         },
-        ExpenseCurrency: {
+        expenseCurrency: {
             internalId: 'currency',
             isHeader: false,
-            isLine: true
+            isLine: true,
+            func: (value) => apIntegrationUtil.getCurrencyIdByCode(value)
         },
-        TaxCode: {
+        taxcode: {
             internalId: 'taxcode',
             isHeader: false,
             isLine: true
         },
-        ExpenseAmount: {
+        taxAmount: {
+            internalId: 'tax1amt',
+            isHeader: false,
+            isLine: true
+        },
+        grossAmount: {
+            internalId: 'grossamt',
+            isHeader: false,
+            isLine: true
+        },
+        expenseAmount: {
             internalId: 'foreignamount',
             isHeader: false,
             isLine: true
         },
-        ExpenseExRate: {
+        exchangeRate: {
             internalId: 'exchangerate',
-            isHeader: false,
+            isHeader: true,
             isLine: true
         },
-        Department: {
+        department: {
             internalId: 'department',
-            isHeader: false,
+            isHeader: true,
             isLine: true
         },
-        Class: {
+        class: {
             internalId: 'class',
-            isHeader: false,
+            isHeader: true,
             isLine: true
         },
-        Location: {
+        location: {
             internalId: 'location',
-            isHeader: false,
+            isHeader: true,
             isLine: true
         },
-        ExpenseMemo: {
-            internalId: 'memo',
-            isHeader: false,
-            isLine: true
-        },
-        BPMNumber: {
+        relatedDocument: {
             internalId: 'custbody_gw_reference_number',
             isHeader: true,
             isLine: false
         },
-    }
-
-    exports.fields = fieldConfig
-    exports.allHeaderFields = Object.keys(fieldConfig).filter(function(key) {
-        if(fieldConfig[key].isHeader) {
-            return key
+        expenseCategory: {
+            internalId: 'category',
+            isHeader: false,
+            isLine: true
+        },
+        subsidiary: {
+            internalId: 'subsidiary',
+            isHeader: true,
+            isLine: false,
+            func: (value) => apIntegrationUtil.isCompanyEnableSubsidiary() ? value : null
         }
-    })
-    exports.allLineFields = Object.keys(fieldConfig).filter(function(key) {
-        if(fieldConfig[key].isLine) {
-            return key
-        }
-    })
+    };
 
-    return exports
-})
+    exports.fields = fieldConfig;
+    exports.allHeaderFields = Object.keys(fieldConfig).filter(function (key) {
+        if (fieldConfig[key].isHeader) {
+            return key;
+        }
+    });
+    exports.allLineFields = Object.keys(fieldConfig).filter(function (key) {
+        if (fieldConfig[key].isLine) {
+            return key;
+        }
+    });
+
+    return exports;
+});

@@ -7,53 +7,64 @@
  * @NModuleScope Public
  */
 define([
-    '../../library/ramda.min'
+  '../../library/gw_date_util.js',
+    '../ap_library/gw_ap_lib.js'
 ], (
-    ramda
+  dateUtil,
+  apIntegrationUtil
 ) => {
 
     let exports = {};
 
     let fieldConfig = {
-        Entity: {
-            internalId: 'entity',
-        },
-        POID: {
-            internalId: 'purchaseorder'
-        },
-        Account: {
-            internalId: 'account',
-        },
-        ExchangeRate: {
-            internalId: 'exchangerate',
-        },
-        Date: {
-            internalId: 'trandate',
-        },
-        Amount: {
-            internalId: 'payment',
-        },
-        Memo: {
-            internalId: 'memo',
-        },
-        Location: {
-            internalId: 'location',
-        },
-        Department: {
-            internalId: 'department',
-        },
-        Class: {
-            internalId: 'class',
-        },
-        BPMNumber: {
-            internalId: 'custbody_gw_reference_number',
-        },
+      subsidiary: {
+        internalid: 'subsidiary',
+        func: (value) => {
+          return apIntegrationUtil.isCompanyEnableSubsidiary() ? value : null
+        }
+      },
+      entity: {
+        internalId: 'entity'
+      },
+      poid: {
+        internalId: 'purchaseorder'
+      },
+      account: {
+        internalId: 'account',
+        func: apIntegrationUtil.getAccountIdByAccountNumber
+      },
+      exchangeRate: {
+        internalId: 'exchangerate'
+      },
+      date: {
+        internalId: 'trandate',
+        func: (value) => apIntegrationUtil.formatDate(value)
+      },
+      amount: {
+        internalId: 'payment'
+      },
+      memo: {
+        internalId: 'memo'
+      },
+      location: {
+        internalId: 'location'
+      },
+      department: {
+        internalId: 'department'
+      },
+      class: {
+        internalId: 'class'
+      },
+      relatedDocument: {
+        internalId: 'custbody_gw_reference_number'
+      },
+      taxFilingMonth: {
+        internalId: 'custrecord_gw_ap_doc_apply_month'
+      }
     }
 
     exports.fields = fieldConfig
-    exports.allFields = Object.keys(fieldConfig).map(function(key) {
-        return key
-    })
+    exports.allFields = Object.keys(fieldConfig);
 
     return exports
 })

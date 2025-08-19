@@ -63,10 +63,17 @@ define([
           if (fieldObj.dataType === 'date') {
             fieldValue = convertDate(fieldValue)
           }
-          newRecord.setValue({
-            fieldId: fieldId,
-            value: fieldValue
-          })
+          if (fieldObj.dataType === 'list') {
+              newRecord.setText({
+                  fieldId: fieldId,
+                  text: fieldValue
+              })
+          } else {
+              newRecord.setValue({
+                  fieldId: fieldId,
+                  value: fieldValue
+              })
+          }
         }
       })
       return newRecord.save()

@@ -163,6 +163,11 @@ define(['../library/ramda.min'], function (ramda) {
       toField: 'custrecord_gw_ap_doc_apply_period',
       dataType: 'string'
     },
+      taxFilingMonth: {
+          name: 'taxFilingMonth',
+          toField: 'custrecord_gw_ap_doc_apply_month',
+          dataType: 'list'
+      },
     filingSalesTax: {
       name: 'filingSalesTax',
       toField: 'custrecord_gw_ap_doc_apply',

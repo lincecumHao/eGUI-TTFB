@@ -6,123 +6,172 @@
  * @NApiVersion 2.1
  * @NModuleScope Public
  */
-define([
-    '../../library/ramda.min'
-], (
-    ramda
-) => {
-
+define(['../../library/ramda.min', '../ap_library/gw_ap_lib.js'], (ramda, apIntegrationUtil) => {
     let exports = {};
 
     let fieldConfig = {
-        Entity: {
+        subsidiary: {
+            internalId: 'subsidiary',
+            isHeader: true,
+            isItemLine: false,
+            isExpenseLine: false,
+            func: (value) => {
+                return apIntegrationUtil.isCompanyEnableSubsidiary() ? value : null;
+            }
+        },
+        entity: {
             internalId: 'entity',
             isHeader: true,
             isItemLine: false,
-            isExpenseLine: false
+            isExpenseLine: false,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        Account: {
+        account: {
             internalId: 'account',
-            isHeader: true,
+            isHeader: false,
             isItemLine: false,
-            isExpenseLine: true
+            isExpenseLine: true,
+            func: apIntegrationUtil.getAccountIdByAccountNumber
         },
-        Date: {
+        date: {
             internalId: 'trandate',
             isHeader: true,
             isItemLine: false,
-            isExpenseLine: false
+            isExpenseLine: false,
+            func: apIntegrationUtil.formatDate
         },
-        DueDate: {
+        dueDate: {
             internalId: 'duedate',
             isHeader: true,
             isItemLine: false,
-            isExpenseLine: false
+            isExpenseLine: false,
+            func: apIntegrationUtil.formatDate
         },
-        Memo: {
+        memo: {
             internalId: 'memo',
             isHeader: true,
-            isItemLine: false,
-            isExpenseLine: true
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        Location: {
+        location: {
             internalId: 'location',
             isHeader: true,
-            isItemLine: false,
-            isExpenseLine: false
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        // ItemCode: {
-        //     internalId: 'item',
-        //     isHeader: false,
-        //     isItemLine: true,
-        //     isExpenseLine: false
-        // },
-        Quantity: {
+        itemCode: {
+            internalId: 'item',
+            isHeader: false,
+            isItemLine: true,
+            isExpenseLine: false,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
+        },
+        quantity: {
             internalId: 'quantity',
             isHeader: false,
             isItemLine: true,
             isExpenseLine: false
         },
-        TaxCode: {
+        taxcode: {
             internalId: 'taxcode',
             isHeader: false,
             isItemLine: true,
             isExpenseLine: true
         },
-        Amount: {
+        rate: {
+            internalId: 'rate',
+            isHeader: false,
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
+        },
+        amount: {
             internalId: 'amount',
             isHeader: false,
-            isItemLine: false,
-            isExpenseLine: true
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        TaxAmount: {
+        taxAmount: {
             internalId: 'tax1amt',
             isHeader: false,
-            isItemLine: false,
-            isExpenseLine: true
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        CrossAmount: {
+        grossAmount: {
             internalId: 'grossamt',
             isHeader: false,
-            isItemLine: false,
-            isExpenseLine: true
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        Department: {
+        department: {
             internalId: 'department',
-            isHeader: false,
-            isItemLine: false,
-            isExpenseLine: true
+            isHeader: true,
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        Class: {
+        class: {
             internalId: 'class',
-            isHeader: false,
-            isItemLine: false,
-            isExpenseLine: true
+            isHeader: true,
+            isItemLine: true,
+            isExpenseLine: true,
+            func: (value, requestObj) => {
+                return requestObj.poid ? null : value;
+            }
         },
-        BPMNumber: {
+        relatedDocument: {
             internalId: 'custbody_gw_reference_number',
             isHeader: true,
             isItemLine: false,
             isExpenseLine: false
         },
-    }
+        tranid: {
+            internalId: 'tranid',
+            isHeader: true,
+            isItemLine: false,
+            isExpenseLine: false
+        }
+    };
 
-    exports.fields = fieldConfig
-    exports.allHeaderFields = Object.keys(fieldConfig).filter(function(key) {
-        if(fieldConfig[key].isHeader) {
-            return key
+    exports.fields = fieldConfig;
+    exports.allHeaderFields = Object.keys(fieldConfig).filter((key) => {
+        if (fieldConfig[key].isHeader) {
+            return key;
         }
-    })
-    exports.allItemLineFields = Object.keys(fieldConfig).filter(function(key) {
-        if(fieldConfig[key].isItemLine) {
-            return key
+    });
+    exports.allItemLineFields = Object.keys(fieldConfig).filter(function (key) {
+        if (fieldConfig[key].isItemLine) {
+            return key;
         }
-    })
-    exports.allExpenseLineFields = Object.keys(fieldConfig).filter(function(key) {
-        if(fieldConfig[key].isExpenseLine) {
-            return key
+    });
+    exports.allExpenseLineFields = Object.keys(fieldConfig).filter(function (key) {
+        if (fieldConfig[key].isExpenseLine) {
+            return key;
         }
-    })
+    });
 
-    return exports
-})
+    return exports;
+});
