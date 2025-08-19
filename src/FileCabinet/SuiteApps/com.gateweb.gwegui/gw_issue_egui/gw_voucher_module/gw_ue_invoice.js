@@ -175,7 +175,7 @@ define([
         const recordType = 'customrecord_gw_business_entity'
         let filters = []
         if(subsidiary) {
-            filters.push(['custrecord_gw_be_ns_subsidiary', 'anyof', subsidiary])
+            filters.push(['custrecord_gw_be_ns_subsidiary', 'is', subsidiary])
             filters.push('OR')
             filters.push(['custrecord_gw_be_ns_id', 'is', subsidiary])
         }
