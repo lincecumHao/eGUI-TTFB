@@ -38,7 +38,7 @@ define([
       },
       date: {
         internalId: 'trandate',
-        func: (value) => apIntegrationUtil.formatDate(value)
+        func: apIntegrationUtil.formatDate
       },
       amount: {
         internalId: 'payment'
@@ -60,7 +60,10 @@ define([
       },
       taxFilingMonth: {
         internalId: 'custrecord_gw_ap_doc_apply_month'
-      }
+      },
+        approvalStatus: {
+            internalId: 'approvalstatus',
+        }
     }
 
     exports.fields = fieldConfig

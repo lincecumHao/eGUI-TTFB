@@ -54,8 +54,8 @@ define(['../../library/ramda.min', '../ap_library/gw_ap_lib.js'], (ramda, apInte
             isHeader: true,
             isItemLine: true,
             isExpenseLine: true,
-            func: (value, requestObj) => {
-                return requestObj.poid ? null : value;
+            func: (value, requestObj, isLine) => {
+                return requestObj.poid && isLine ? null : value;
             }
         },
         location: {
@@ -150,6 +150,12 @@ define(['../../library/ramda.min', '../ap_library/gw_ap_lib.js'], (ramda, apInte
         },
         tranid: {
             internalId: 'tranid',
+            isHeader: true,
+            isItemLine: false,
+            isExpenseLine: false
+        },
+        approvalStatus: {
+            internalId: 'approvalstatus',
             isHeader: true,
             isItemLine: false,
             isExpenseLine: false

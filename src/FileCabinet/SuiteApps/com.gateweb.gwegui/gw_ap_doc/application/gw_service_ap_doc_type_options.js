@@ -81,10 +81,7 @@ define(['N/record', 'N/search', './gw_lib_search', './gw_lib_wrapper'], function
 
   function getApDocTypeIdByValueAndInvoiceCode(value, invCode) {
     var results = allOptions.filter(function (option) {
-      return (
-        parseInt(option.value) === parseInt(value) &&
-        invCode === option.mofDocType
-      )
+      return (parseInt(option.value) === parseInt(value) && invCode === option.mofDocType)
     })
     if (results && results.length > 0) {
       return results[0].id

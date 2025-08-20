@@ -13,6 +13,12 @@ define([
     let exports = {};
 
     let fieldConfig = {
+        subsidiary: {
+            internalId: 'subsidiary',
+            isHeader: true,
+            isLine: false,
+            func: (value) => apIntegrationUtil.isCompanyEnableSubsidiary() ? value : null
+        },
         employee: {
             internalId: 'entity',
             isHeader: true,
@@ -22,19 +28,19 @@ define([
             internalId: 'trandate',
             isHeader: true,
             isLine: false,
-            func: (value) => apIntegrationUtil.formatDate(value)
+            func: apIntegrationUtil.formatDate
         },
         dueDate: {
             internalId: 'duedate',
             isHeader: true,
             isLine: false,
-            func: (value) => apIntegrationUtil.formatDate(value)
+            func: apIntegrationUtil.formatDate
         },
         currency: {
             internalId: 'currency',
             isHeader: true,
             isLine: false,
-            func: (value) => apIntegrationUtil.getCurrencyIdByCode(value)
+            func: apIntegrationUtil.getCurrencyIdByCode
         },
         memo: {
             internalId: 'memo',
@@ -70,19 +76,19 @@ define([
             internalId: 'expensedate',
             isHeader: false,
             isLine: true,
-            func: (value) => apIntegrationUtil.formatDate(value)
+            func: apIntegrationUtil.formatDate
         },
         expenseAccount: {
             internalId: 'expenseaccount',
             isHeader: false,
             isLine: true,
-            func: (value) => apIntegrationUtil.getAccountIdByAccountNumber(value)
+            func: apIntegrationUtil.getAccountIdByAccountNumber
         },
         expenseCurrency: {
             internalId: 'currency',
             isHeader: false,
             isLine: true,
-            func: (value) => apIntegrationUtil.getCurrencyIdByCode(value)
+            func: apIntegrationUtil.getCurrencyIdByCode
         },
         taxcode: {
             internalId: 'taxcode',
@@ -134,11 +140,10 @@ define([
             isHeader: false,
             isLine: true
         },
-        subsidiary: {
-            internalId: 'subsidiary',
+        approvalStatus: {
+            internalId: 'approvalstatus',
             isHeader: true,
-            isLine: false,
-            func: (value) => apIntegrationUtil.isCompanyEnableSubsidiary() ? value : null
+            isLine: false
         }
     };
 

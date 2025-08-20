@@ -213,7 +213,7 @@ define([
             let fieldId = recordTypeObject.fields[prop].internalId;
             let value = transactionObject[prop];
             if (recordTypeObject.fields[prop].func) {
-                value = recordTypeObject.fields[prop].func(value, transactionObject);
+                value = recordTypeObject.fields[prop].func(value, transactionObject, false);
             }
             if (value) {
                 recordObject.setValue({ fieldId, value });
@@ -228,7 +228,7 @@ define([
                 let fieldId = recordTypeObject.fields[prop].internalId;
                 let value = lineObjectArray[itemLine][prop];
                 if (recordTypeObject.fields[prop].func) {
-                    value = recordTypeObject.fields[prop].func(value, transactionObject);
+                    value = recordTypeObject.fields[prop].func(value, transactionObject, true);
                 }
                 if (value) {
                     recordObject.setCurrentSublistValue({ sublistId, fieldId, value });
@@ -305,23 +305,9 @@ define([
                             let fieldId = vendorBill.fields[prop].internalId;
                             let value = matchedItemObject[prop];
                             if (vendorBill.fields[prop].func) {
-                                value = vendorBill.fields[prop].func(value, transactionObject);
+                                value = vendorBill.fields[prop].func(value, transactionObject, true);
                             }
-                            log.debug({
-                                title: 'before update item line',
-                                details: {
-                                    fieldId,
-                                    value
-                                }
-                            });
                             if (value) {
-                                log.debug({
-                                    title: 'in update item line',
-                                    details: {
-                                        fieldId,
-                                        value
-                                    }
-                                });
                                 recordObject.setCurrentSublistValue({
                                     sublistId: itemSublistId,
                                     fieldId,
