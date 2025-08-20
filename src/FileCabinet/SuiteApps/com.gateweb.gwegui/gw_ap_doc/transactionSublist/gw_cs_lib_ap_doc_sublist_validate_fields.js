@@ -253,12 +253,16 @@ define([
    * @param [context.columnNum=undefined]
    *    {string} The index of the column if the field is in a matrix.
    *
+   * @param fieldValue
+   *
+   * @param recordObj
+   *
    * @return {{isValid: {boolean} ,error: {Object}[]}}
    *
    * @static
    * @function validateCommonNumber
    */
-  function validateCommonNumber(context, fieldValue) {
+  function validateCommonNumber(context, fieldValue, recordObj) {
     //console.log('validateCommonNumber fieldValue', fieldValue)
     var resultObj = {
       isValid: true,
@@ -291,7 +295,7 @@ define([
       resultObj = validateCommonNumberOptional(docType, commonNumber)
     }
     if(commonNumberValidator.isCommonNumberDuplicate(docType)) {
-      resultObj = validateCommonNumberDuplicate(context, docType, commonNumber)
+      resultObj = validateCommonNumberDuplicate(context, docType, commonNumber, recordObj)
     }
     //console.log('validateCommonNumber, resultObj', resultObj)
     return resultObj
@@ -310,7 +314,7 @@ define([
     return resultObj
   }
 
-  function validateCommonNumberDuplicate(context, docType, commonNumber) {
+  function validateCommonNumberDuplicate(context, docType, commonNumber, recordObj) {
     var resultObj = {
       isValid: true,
       error: []
@@ -322,32 +326,47 @@ define([
 
     // 判斷自己這張 record 有沒有重複
     var currentRecord = context.currentRecord;
-    var sublistId = 'recmachcustrecord_gw_apt_doc_tran_id';
-    var currentPeriod = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'custrecord_gw_ap_doc_acct_period'})
-    var currentId = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'id'})
-    var currentKey = getKey(currentPeriod, commonNumber);
-    var lineCount = currentRecord.getLineCount({ sublistId });
-    var count = 0;
-    for (let line = 0; line < lineCount; line++) {
-      var id = currentRecord.getSublistValue({
-        sublistId, line, fieldId: 'id'
-      });
-      if(id === currentId) continue;
+    var currentPeriod = null;
+    if(currentRecord) {
+        var sublistId = 'recmachcustrecord_gw_apt_doc_tran_id';
+        currentPeriod = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'custrecord_gw_ap_doc_acct_period'})
+        var currentId = currentRecord.getCurrentSublistValue({sublistId, fieldId: 'id'})
+        var currentKey = getKey(currentPeriod, commonNumber);
+        var lineCount = currentRecord.getLineCount({ sublistId });
+        var count = 0;
+        for (let line = 0; line < lineCount; line++) {
+            var id = currentRecord.getSublistValue({
+                sublistId, line, fieldId: 'id'
+            });
+            if(id === currentId) continue;
 
-      var commonNumberInTheList = currentRecord.getSublistValue({
-        sublistId, line, fieldId: 'custrecord_gw_ap_doc_comm_num'
-      });
-      var period = currentRecord.getSublistValue({
-        sublistId, line, fieldId: 'custrecord_gw_ap_doc_acct_period'
-      });
-      var key = getKey(period, commonNumberInTheList);
-      // console.log(commonNumberInTheList, commonNumber, period, currentPeriod, key, currentKey);
-      if(key === currentKey) count++;
+            var commonNumberInTheList = currentRecord.getSublistValue({
+                sublistId, line, fieldId: 'custrecord_gw_ap_doc_comm_num'
+            });
+            var period = currentRecord.getSublistValue({
+                sublistId, line, fieldId: 'custrecord_gw_ap_doc_acct_period'
+            });
+            var key = getKey(period, commonNumberInTheList);
+            // console.log(commonNumberInTheList, commonNumber, period, currentPeriod, key, currentKey);
+            if(key === currentKey) count++;
+        }
+        if(count >= 1 && lineCount ) {
+            resultObj.isValid = false
+            resultObj.error.push(GwError.CommonNumberMustNotDuplicate())
+            return resultObj
+        }
     }
-    if(count >= 1 && lineCount ) {
-      resultObj.isValid = false
-      resultObj.error.push(GwError.CommonNumberMustNotDuplicate())
-      return resultObj
+
+    if(!currentPeriod) {
+        log.debug({title: 'validateCommonNumberDuplicate recordObj', details: recordObj});
+        // NO currentRecord. value comes from AP Restlet
+        if (recordObj.custrecord_gw_ap_doc_acct_period) {
+            currentPeriod = recordObj.custrecord_gw_ap_doc_acct_period;
+        } else {
+            resultObj.isValid = false
+            resultObj.error.push(GwError.MissingDocIssuePeriod)
+            return resultObj
+        }
     }
 
     // 判斷 custom record 有沒有重複
@@ -358,7 +377,7 @@ define([
       "AND",
       ["custrecord_gw_ap_doc_type.custrecord_gw_ap_doc_type_value","equalto","25"],
     ]
-    if (currentRecord.id) {
+    if (currentRecord && currentRecord.id) {
      filters.push('AND');
      filters.push(["custrecord_gw_apt_doc_tran_id","noneof", currentRecord.id]);
     }

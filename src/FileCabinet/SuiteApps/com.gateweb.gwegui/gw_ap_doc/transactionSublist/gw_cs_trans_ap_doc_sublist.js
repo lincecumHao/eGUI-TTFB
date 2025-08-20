@@ -103,7 +103,7 @@ define([
    * @function validateField
    */
   function validateField(context, fieldId, recordObj) {
-    // TODO
+    // 這個 function 同時會給 AP Restlet 使用
     // console.log('validateField fieldId', fieldId)
     var fieldRoute = {}
     var resultObj = { isValid: true, error: [] }
@@ -134,11 +134,11 @@ define([
     if (fieldRoute[fieldId] && (fieldValue || fieldValue !== '')) {
       fieldValidationLib.setCurrentContext(context)
       fieldValidationLib.setCurrentSublistApDocRecord(recordObj)
-      resultObj = fieldRoute[fieldId](context, recordObj[fieldId])
+      resultObj = fieldRoute[fieldId](context, recordObj[fieldId], recordObj)
     } else if (fieldId === 'custrecord_gw_ap_doc_co_qty' && fieldRoute[fieldId]) {
       fieldValidationLib.setCurrentContext(context)
       fieldValidationLib.setCurrentSublistApDocRecord(recordObj)
-      resultObj = fieldRoute[fieldId](context, recordObj[fieldId])
+      resultObj = fieldRoute[fieldId](context, recordObj[fieldId], recordObj)
     }
     // console.log('validateField resultObj', resultObj)
     return resultObj
@@ -327,7 +327,6 @@ define([
   }
 
   exports.validateFieldForAPI = validateField
-
   exports.fieldChanged = sublistFilterWrapper(fieldChanged)
   exports.lineInit = sublistFilterWrapper(lineInit)
   exports.validateLine = sublistFilterWrapper(validateLine)

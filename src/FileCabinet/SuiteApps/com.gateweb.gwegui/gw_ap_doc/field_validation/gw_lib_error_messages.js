@@ -82,6 +82,12 @@ define([], function () {
     chtMessage: '其他憑證號碼不可填',
   }
 
+  exports.MissingDocIssuePeriod = {
+      code: 'MISSING_DOC_ISSUE_PERIOD',
+      message: 'docIssuePeriod is missing',
+      chtMessage: '憑證期別 不可為空白'
+  };
+
   exports.CommonNumberMustNotDuplicate = function(ids) {
     var chtMessage = '其他憑證號碼在相同年月中僅能出現一次';
     if(ids && ids.length > 0) {
