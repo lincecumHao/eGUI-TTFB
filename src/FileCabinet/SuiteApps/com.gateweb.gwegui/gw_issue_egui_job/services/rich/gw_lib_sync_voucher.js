@@ -1811,7 +1811,7 @@ define([
         return requestParamArray
     }
 
-    function syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse) {
+    function syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse, companyInformation) {
         log.debug({
             title: 'syncVoucherThroughRich',
             details: 'start...'
@@ -1819,7 +1819,7 @@ define([
         let responseObj = {
             code: 0, body: ''
         }
-        let url = `${richBaseURL}/api/v1/voucher`
+        let url = `${richBaseURL}/api/v1/voucher?account=${companyInformation.values.custrecord_gw_be_company_account}`
         log.audit({
             title: 'syncVoucherThroughRich - url',
             details: url
@@ -1900,7 +1900,7 @@ define([
                     throw getRichTokenResponse
                 }
 
-                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse)
+                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse, companyInformationArray[0])
                 log.debug({
                     title: 'proceedToSyncToB2B2 - syncVoucherResponse',
                     details: syncVoucherResponse
@@ -2130,7 +2130,7 @@ define([
                     throw getRichTokenResponse
                 }
 
-                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse)
+                const syncVoucherResponse = syncVoucherThroughRich(richBaseURL, requestParam, getRichTokenResponse, companyInformationArray[0])
                 log.debug({
                     title: 'proceedToSyncAPToB2B2 - syncVoucherResponse',
                     details: syncVoucherResponse
