@@ -292,10 +292,18 @@ define([
     }
     if (commonNumberValidator.isCommonNumberOptional(docType)) {
       //console.log('validateCommonNumber common number is optional')
-      resultObj = validateCommonNumberOptional(docType, commonNumber)
+      let result = validateCommonNumberOptional(docType, commonNumber)
+        if(!result.isValid) {
+            resultObj.isValid = false;
+            resultObj.error = resultObj.error.concat(result.error);
+        }
     }
     if(commonNumberValidator.isCommonNumberDuplicate(docType)) {
-      resultObj = validateCommonNumberDuplicate(context, docType, commonNumber, recordObj)
+      let result = validateCommonNumberDuplicate(context, docType, commonNumber, recordObj)
+        if(!result.isValid) {
+            resultObj.isValid = false;
+            resultObj.error = resultObj.error.concat(result.error);
+        }
     }
     //console.log('validateCommonNumber, resultObj', resultObj)
     return resultObj
@@ -319,6 +327,7 @@ define([
       isValid: true,
       error: []
     }
+    if(!commonNumber) return resultObj;
 
     function getKey(period, commonNumber) {
       return period + ':' + commonNumber;
@@ -424,10 +433,9 @@ define([
       error: []
     }
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
-    if (
-      isBothNumberExists(value, guiNumber) ||
-      isBothNumberNotExists(value, guiNumber)
-    ) {
+      log.debug({title: 'validateCommonNumberOptional', details: {value, guiNumber, isBothNumberExists: isBothNumberExists(value, guiNumber), isBothNumberNotExists: isBothNumberNotExists(value, guiNumber)} });
+    if (isBothNumberExists(value, guiNumber) || isBothNumberNotExists(value, guiNumber)) {
+        log.debug({title: 'error'});
       resultObj.isValid = false
       resultObj.error.push(GwError.GuiNumberCommonNumberConflictError)
       return resultObj
@@ -440,8 +448,7 @@ define([
   }
 
   function isBothNumberExists(commonNumber, guiNumber) {
-    return
-    !stringUtil.isNullOrEmpty(guiNumber) &&
+    return !stringUtil.isNullOrEmpty(guiNumber) &&
       !stringUtil.isNullOrEmpty(commonNumber)
   }
 
@@ -562,7 +569,8 @@ define([
     var consolidationMark =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
         getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
-      )
+      ) || getSublistValue(apDocFields.fields.consolidationMark.id);
+
     var docType = getDocType(getNumberSublistFieldValue(apDocFields.fields.docType.id))
 
     var guiNumber = getSublistValue(apDocFields.fields.guiNum.id)
@@ -892,7 +900,8 @@ define([
     var memo =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
         getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
-      )
+      ) || getSublistValue(apDocFields.fields.consolidationMark.id);
+
     const taxDiffAllowance = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_TAX_DIFF_ALLOWANCE'));
     const apSummaryDocCount = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_SUM_DOC_COUNT'));
     const apOverSummaryDocTaxDiff = stringUtility.convertToFloat(getConfig('AP_INTEGRATION', 'AP_OVER_SUM_DOC_TAX_DIFF'));
@@ -1087,7 +1096,7 @@ define([
    * @static
    * @function validateConsolidationQty
    */
-  function validateConsolidationQty(context, value) {
+  function validateConsolidationQty(context, value, objRecord) {
     var resultObj = {
       isValid: true,
       error: []
@@ -1097,7 +1106,8 @@ define([
     var memo =
       apDocConsolidationMarkService.getConsolidateMarkValueByRecordId(
         getNumberSublistFieldValue(apDocFields.fields.consolidationMark.id)
-      )
+      ) || getSublistValue(apDocFields.fields.consolidationMark.id);
+
     if(( docType === '25' || docType === '26' || docType === '27') && memo === CONSOLIDATE_MARK.SUMMARY) {
       const MIN_CONSOLIDATION_QTY = 1;
       if(!consolidationQty || consolidationQty <= MIN_CONSOLIDATION_QTY) {

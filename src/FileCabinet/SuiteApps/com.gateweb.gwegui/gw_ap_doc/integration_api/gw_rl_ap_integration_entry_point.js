@@ -9,11 +9,13 @@
 define([
     './gw_lib_ap_integration',
     '../../ap-integration/infrastructure/gw_vo_response',
-    'N/error'
+    'N/error',
+    'N/search'
 ], (
     gwLibApIntegration,
     RestletResponse,
-    error
+    error,
+    search
 ) => {
 
     let exports = {};
@@ -64,11 +66,42 @@ define([
         return isRequestParamsValid
     }
 
+    function isTrxValid(reqArray) {
+        let isValid = true;
+        let transactionArray = [];
+        reqArray.forEach(function (requestObj) {
+            requestObj?.GUIs.forEach(function (guiObj) {
+                if (guiObj?.transaction) {
+                    transactionArray.push(guiObj.transaction);
+                } else {
+                    isValid = false;
+                }
+            });
+        });
+        if (!isValid) return isValid;
+
+
+        transactionArray = [...new Set(transactionArray)];
+        const transactionSearchObj = search.create({
+            type: 'transaction',
+            filters: [
+                ['mainline', 'is', 'T'],
+                'AND',
+                ['internalid', 'anyof'].concat(transactionArray),
+                'AND',
+                ['type', 'anyof', 'ExpRept', 'VPrep', 'VendBill']
+            ],
+            columns: ['internalid']
+        });
+        const searchResultCount = transactionSearchObj.runPaged().count;
+        return searchResultCount === transactionArray.length;
+    }
+
     function post(request) {
         log.audit({title: 'post - request', details: request})
 
         //TODO - get integration setup
-        let integrationOption = gwLibApIntegration.getSetupOption()
+        let {option: integrationOption, isTrxNeeded} = gwLibApIntegration.getSetupOption()
         if (!integrationOption) {
             const integrationError = error.create({
                 name: 'INVALID_INTEGRATION_OPTION',
@@ -91,6 +124,15 @@ define([
             const validateRequestError = error.create({
                 name: 'INVALID_REQUEST',
                 message: 'The request parameters is invalid',
+                notifyOff: false
+            })
+            throw {name: validateRequestError.name, message: validateRequestError.message}
+        }
+        log.debug({title: 'isTrxNeeded', details: {isTrxNeeded, integrationOption, isTrxValid: isTrxValid(requestObj)}});
+        if (isTrxNeeded && integrationOption === 2 && !isTrxValid(requestObj)) {
+            const validateRequestError = error.create({
+                name: 'INVALID_REQUEST',
+                message: 'The [transaction] parameters is invalid',
                 notifyOff: false
             })
             throw {name: validateRequestError.name, message: validateRequestError.message}

@@ -139,6 +139,10 @@ define([
       fieldValidationLib.setCurrentContext(context)
       fieldValidationLib.setCurrentSublistApDocRecord(recordObj)
       resultObj = fieldRoute[fieldId](context, recordObj[fieldId], recordObj)
+    } else if (fieldId === 'custrecord_gw_ap_doc_comm_num' && fieldRoute[fieldId]) {
+        fieldValidationLib.setCurrentContext(context)
+        fieldValidationLib.setCurrentSublistApDocRecord(recordObj)
+        resultObj = fieldRoute[fieldId](context, recordObj[fieldId], recordObj)
     }
     // console.log('validateField resultObj', resultObj)
     return resultObj

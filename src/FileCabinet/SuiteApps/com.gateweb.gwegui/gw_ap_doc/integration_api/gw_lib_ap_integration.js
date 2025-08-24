@@ -589,23 +589,25 @@ define([
 
     function getSetupOption() {
         const type = 'customrecord_gw_ap_integration_setup';
-        let filters = [];
-        filters.push(['internalid', 'anyof', 1]);
+        let filters = [["isinactive","is","F"]];
+        // filters.push(['internalid', 'anyof', 1]);
         let columns = [];
         columns.push('custrecord_gw_ais_option');
+        columns.push('custrecord_gw_ais_trx_needed');
         const integrationSetupSearch = search.create({
             type,
             filters,
             columns
         });
         let option = null;
+        let isTrxNeeded = null;
         integrationSetupSearch.run().each(function (result) {
-            // .run().each has a limit of 4,000 results
             option = result.getValue({ name: 'custrecord_gw_ais_option' });
-            return true;
+            isTrxNeeded = result.getValue({ name: 'custrecord_gw_ais_trx_needed' });
+            // return true;
         });
 
-        return option;
+        return {option, isTrxNeeded};
     }
 
     exports.callApValidation = callApValidation;

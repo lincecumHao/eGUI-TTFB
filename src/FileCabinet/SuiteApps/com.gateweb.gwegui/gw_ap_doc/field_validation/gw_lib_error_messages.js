@@ -205,7 +205,7 @@ define([], function () {
   exports.ConsolidationQty = {
     code: 'CONSOLIDATION_QTY_ERROR',
     message: 'Consolidation qty should be greater then 1 if 匯總或分攤註記 is "A-彙加"',
-    chtMessage: '如 "匯總或分攤註記" 為 "A-彙加", "匯總數量" 應大於 1',
+    chtMessage: '如 [匯總或分攤註記] 為 [A-彙加], [匯總數量] 應大於 1',
   }
   return exports
 })
