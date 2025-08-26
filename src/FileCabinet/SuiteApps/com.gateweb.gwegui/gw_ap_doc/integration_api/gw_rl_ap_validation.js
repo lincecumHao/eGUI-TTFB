@@ -234,6 +234,7 @@ define([
     let mof = ''
     let recordId = 0
     let guiPeriod = getGuiPeriod(item.guiDate)
+      log.debug({ title: 'guiPeriod', details: guiPeriod });
 
     if (guiNumberValidator.isGuiTrackValidationRequired(value) && item.guiNum !== '') {
       mof = apDocTypeService.getMofValue(guiPeriod, item.docType, item.guiNum.substring(0, 2))
@@ -259,7 +260,10 @@ define([
 
   function getGuiPeriod(guiDate) {
     let year = parseInt(guiDate.substring(0, 4)) - 1911
-    let month = parseInt(guiDate.substring(5, 7))
+      let month = parseInt(guiDate.substring(5, 7))
+      if(guiDate.indexOf('-') === -1) {
+          month =  parseInt(guiDate.substring(4, 6))
+      }
 
     if (month % 2 !== 0) {
       month += 1

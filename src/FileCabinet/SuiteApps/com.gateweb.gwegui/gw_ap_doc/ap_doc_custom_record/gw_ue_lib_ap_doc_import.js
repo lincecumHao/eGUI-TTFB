@@ -56,7 +56,7 @@ define([
         guiData[0].GUIs[0][fieldName] = fieldValue
       })
 
-      guiData[0].GUIs[0]['transactionNo'] = saveData.getValue('custrecord_gw_apt_doc_tran_id_i')
+      // guiData[0].GUIs[0]['transactionNo'] = saveData.getValue('custrecord_gw_apt_doc_tran_id_i')
 
       log.debug('setGUIs - guiData', guiData[0].GUIs[0])
       log.debug('setGUIs - guiData', guiData)
